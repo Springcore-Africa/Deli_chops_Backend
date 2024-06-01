@@ -4,16 +4,15 @@ import africa.springCore.delichopsbackend.data.models.BioData;
 import africa.springCore.delichopsbackend.data.models.Customer;
 import africa.springCore.delichopsbackend.data.repositories.CustomerRepository;
 import africa.springCore.delichopsbackend.dtos.requests.CustomerCreationRequest;
+import africa.springCore.delichopsbackend.dtos.requests.CustomerUpdateRequest;
 import africa.springCore.delichopsbackend.dtos.responses.BioDataResponseDto;
 import africa.springCore.delichopsbackend.dtos.responses.CustomerListingDto;
 import africa.springCore.delichopsbackend.dtos.responses.CustomerResponseDto;
 import africa.springCore.delichopsbackend.enums.Role;
-import africa.springCore.delichopsbackend.exception.DeliChopsException;
-import africa.springCore.delichopsbackend.exception.MapperException;
-import africa.springCore.delichopsbackend.exception.UserNotFoundException;
-import africa.springCore.delichopsbackend.exception.CustomerCreationException;
+import africa.springCore.delichopsbackend.exception.*;
 import africa.springCore.delichopsbackend.utils.DeliMapper;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.Page;
@@ -56,16 +55,32 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     private void validateCustomerCreationRequest(CustomerCreationRequest customerCreationRequest) throws CustomerCreationException {
-        Optional<Customer> foundCustomerByEmail = customerRepository.findByBioData_EmailAddress(customerCreationRequest.getEmailAddress());
-        Optional<Customer> foundCustomerByNumber = customerRepository.findByBioData_PhoneNumber(customerCreationRequest.getPhoneNumber());
-        if (foundCustomerByEmail.isPresent()){
+        validateEmailDuplicity(customerCreationRequest.getEmailAddress());
+        if (customerCreationRequest.getPhoneNumber() != null && !StringUtils.isEmpty(customerCreationRequest.getPhoneNumber())) {
+            validatePhoneNumberDuplicity(customerCreationRequest.getPhoneNumber());
+        }
+    }
+
+    private void validateEmailDuplicity(String emailAddress) throws CustomerCreationException {
+        Optional<Customer> foundCustomerByEmail = customerRepository.findByBioData_EmailAddress(emailAddress);
+        if (emailAddress == null || StringUtils.isEmpty(emailAddress)) {
+            throw new CustomerCreationException("Validation failed, emailAddress cannot be null");
+        }
+        if (foundCustomerByEmail.isPresent()) {
             throw new CustomerCreationException(
-                    String.format(CUSTOMER_WITH_EMAIL_ALREADY_EXISTS, customerCreationRequest.getEmailAddress())
+                    String.format(CUSTOMER_WITH_EMAIL_ALREADY_EXISTS, emailAddress)
             );
         }
-        else if (foundCustomerByNumber.isPresent()){
+    }
+
+    private void validatePhoneNumberDuplicity(String phoneNumber) throws CustomerCreationException {
+        if (phoneNumber == null || StringUtils.isEmpty(phoneNumber)) {
+            throw new CustomerCreationException("Validation failed, phone number cannot be null");
+        }
+        Optional<Customer> foundCustomerByNumber = customerRepository.findByBioData_PhoneNumber(phoneNumber);
+        if (foundCustomerByNumber.isPresent()) {
             throw new CustomerCreationException(
-                    String.format(CUSTOMER_WITH_PHONE_NUMBER_ALREADY_EXISTS, customerCreationRequest.getPhoneNumber())
+                    String.format(CUSTOMER_WITH_PHONE_NUMBER_ALREADY_EXISTS, phoneNumber)
             );
         }
     }
@@ -75,6 +90,10 @@ public class CustomerServiceImpl implements CustomerService {
         Customer foundCustomer = customerRepository.findByBioData_EmailAddress(email).orElseThrow(
                 () -> new UserNotFoundException(String.format(USER_WITH_EMAIL_NOT_FOUND, email))
         );
+        return getCustomerResponseDto(foundCustomer);
+    }
+
+    private CustomerResponseDto getCustomerResponseDto(Customer foundCustomer) throws MapperException {
         BioDataResponseDto bioDataResponse = deliMapper.readValue(foundCustomer.getBioData(), BioDataResponseDto.class);
         CustomerResponseDto customerResponseDto = deliMapper.readValue(foundCustomer, CustomerResponseDto.class);
         customerResponseDto.setBioData(bioDataResponse);
@@ -86,10 +105,7 @@ public class CustomerServiceImpl implements CustomerService {
         Customer foundCustomer = customerRepository.findById(id).orElseThrow(
                 () -> new UserNotFoundException(String.format(USER_WITH_ID_NOT_FOUND, id))
         );
-        BioDataResponseDto bioDataResponse = deliMapper.readValue(foundCustomer.getBioData(), BioDataResponseDto.class);
-        CustomerResponseDto customerResponseDto = deliMapper.readValue(foundCustomer, CustomerResponseDto.class);
-        customerResponseDto.setBioData(bioDataResponse);
-        return customerResponseDto;
+        return getCustomerResponseDto(foundCustomer);
     }
 
     @Override
@@ -125,6 +141,43 @@ public class CustomerServiceImpl implements CustomerService {
             return null;
         });
         return getCustomerListingDto(pagedCustomers, pageable);
+    }
+
+    @Override
+    public CustomerResponseDto updateCustomer(Long id, CustomerUpdateRequest customerUpdateRequest) throws CustomerCreationException, UserNotFoundException, MapperException, CustomerUpdateException {
+        boolean allFieldsAreEmpty = true;
+        findById(id);
+        Customer existingCustomer = customerRepository.findById(id).get();
+        BioData existingCustomerBioData = customerRepository.findById(id).get().getBioData();
+        if (customerUpdateRequest.getEmailAddress() != null && !StringUtils.isEmpty(customerUpdateRequest.getEmailAddress())) {
+            allFieldsAreEmpty = false;
+            validateEmailDuplicity(customerUpdateRequest.getEmailAddress());
+            existingCustomerBioData.setEmailAddress(customerUpdateRequest.getEmailAddress());
+        }
+        if (customerUpdateRequest.getPhoneNumber() != null && !StringUtils.isEmpty(customerUpdateRequest.getPhoneNumber())) {
+            allFieldsAreEmpty = false;
+            System.err.println(customerUpdateRequest.getPhoneNumber());
+            validatePhoneNumberDuplicity(customerUpdateRequest.getPhoneNumber());
+            existingCustomerBioData.setPhoneNumber(customerUpdateRequest.getPhoneNumber());
+        }
+        if (customerUpdateRequest.getFirstName() != null && !StringUtils.isEmpty(customerUpdateRequest.getFirstName())) {
+            allFieldsAreEmpty = false;
+            existingCustomerBioData.setFirstName(customerUpdateRequest.getFirstName());
+        }
+        if (customerUpdateRequest.getLastName() != null && !StringUtils.isEmpty(customerUpdateRequest.getLastName())) {
+            allFieldsAreEmpty = false;
+            existingCustomerBioData.setLastName(customerUpdateRequest.getLastName());
+        }
+        if (customerUpdateRequest.getProfilePicture() != null && !StringUtils.isEmpty(customerUpdateRequest.getProfilePicture())) {
+            allFieldsAreEmpty = false;
+            existingCustomerBioData.setProfilePicture(customerUpdateRequest.getProfilePicture());
+        }
+
+        if (allFieldsAreEmpty) throw new CustomerUpdateException("No field specified for update");
+        else {
+            existingCustomer.setBioData(existingCustomerBioData);
+            return getCustomerResponseDto(customerRepository.save(existingCustomer));
+        }
     }
 
     private CustomerListingDto getCustomerListingDto(Page<CustomerResponseDto> pagedCustomers, Pageable pageable) {
