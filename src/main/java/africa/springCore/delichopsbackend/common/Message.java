@@ -18,7 +18,9 @@ public class Message {
 	public static final String MINISTER_WITH_ID_NOT_FOUND = "Minister with id %s not found";
 	public static final String DEPARTMENT_WITH_ID_NOT_FOUND = "Department with id %s not found";
 	public static final String CUSTOMER_WITH_EMAIL_ALREADY_EXISTS = "Customer with email %s already exists";
+	public static final String VENDOR_WITH_EMAIL_ALREADY_EXISTS = "Vendor with email %s already exists";
 	public static final String CUSTOMER_WITH_PHONE_NUMBER_ALREADY_EXISTS = "Customer with phone number %s already exists";
+	public static final String VENDOR_WITH_PHONE_NUMBER_ALREADY_EXISTS = "Vendor with phone number %s already exists";
 	public static final String ACC_VERIFY_FAILURE = "account verification failed";
 	public static final String PASSWORDS_DO_NOT_MATCH = "Passwords do not match";
 	public static final String ACCOUNT_ALREADY_EXIST = "Account with email %s already exist";
