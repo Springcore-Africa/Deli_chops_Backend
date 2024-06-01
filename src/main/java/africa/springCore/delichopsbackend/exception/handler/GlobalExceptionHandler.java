@@ -1,6 +1,7 @@
 package africa.springCore.delichopsbackend.exception.handler;
 
 import africa.springCore.delichopsbackend.exception.DeliChopsException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -16,6 +17,7 @@ import java.util.Map;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 @ControllerAdvice
+@Slf4j
 public class GlobalExceptionHandler {
     private final ExceptionResponse exceptionResponse = new ExceptionResponse();
 
@@ -24,6 +26,7 @@ public class GlobalExceptionHandler {
         exceptionResponse.setMessage(ex.getLocalizedMessage());
         exceptionResponse.setTimestamp(LocalDateTime.now());
         exceptionResponse.setErrorCode(BAD_REQUEST.value());
+        log.error("DeliChopsException::>> {}", exceptionResponse);
         return new ResponseEntity<>(exceptionResponse, BAD_REQUEST);
     }
     @ExceptionHandler
@@ -31,6 +34,7 @@ public class GlobalExceptionHandler {
         exceptionResponse.setMessage(ex.getMessage());
         exceptionResponse.setTimestamp(LocalDateTime.now());
         exceptionResponse.setErrorCode(BAD_REQUEST.value());
+        log.error("Exception::>> {}", exceptionResponse);
         return new ResponseEntity<>(exceptionResponse, BAD_REQUEST);
     }
 
@@ -45,6 +49,7 @@ public class GlobalExceptionHandler {
         exceptionResponse.setMessage(errors.toString());
         exceptionResponse.setTimestamp(LocalDateTime.now());
         exceptionResponse.setErrorCode(BAD_REQUEST.value());
+        log.error("MethodArgumentNotValidException::>> {}", exceptionResponse);
         return new ResponseEntity<>(exceptionResponse, BAD_REQUEST);
     }
 }

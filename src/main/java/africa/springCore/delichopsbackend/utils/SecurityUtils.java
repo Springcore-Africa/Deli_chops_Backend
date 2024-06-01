@@ -7,6 +7,7 @@ public class SecurityUtils {
     public static String[] getAuthWhiteList() {
         return new String[]{
                 "/api/v1/customers",
+                "/api/v1/health-check",
                 "/api/v1/customers/**",
                 LOGIN_ENDPOINT,
                 "/v2/api-docs",

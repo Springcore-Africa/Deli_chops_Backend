@@ -42,23 +42,25 @@ public class BioData implements Serializable {
     @Column(name = "password", nullable = false)
     private String password;
 
-    @NotBlank
-    @Column(name = "first_name", nullable = false)
+    @Column(name = "first_name", nullable = true)
     private String firstName;
 
-    @NotBlank
-    @Column(name = "last_name", nullable = false)
+    @Column(name = "last_name", nullable = true)
     private String lastName;
 
-    @NotBlank
-    @Column(name = "phone_number", nullable = false, unique = true)
+    @Column(name = "phone_number", nullable = true, unique = true)
     private String phoneNumber;
+
+    @Column(name = "profile_picture", nullable = true, unique = false)
     private String profilePicture;
+
     @Enumerated(EnumType.STRING)
     private List<Role> roles;
+
     @CreatedDate
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime createdAt;
+
     private Boolean isEnabled;
 }

@@ -2,12 +2,10 @@ package africa.springCore.delichopsbackend.controllers;
 
 
 import africa.springCore.delichopsbackend.dtos.requests.CustomerCreationRequest;
+import africa.springCore.delichopsbackend.dtos.requests.CustomerUpdateRequest;
 import africa.springCore.delichopsbackend.dtos.responses.CustomerListingDto;
 import africa.springCore.delichopsbackend.dtos.responses.CustomerResponseDto;
-import africa.springCore.delichopsbackend.exception.DeliChopsException;
-import africa.springCore.delichopsbackend.exception.MapperException;
-import africa.springCore.delichopsbackend.exception.CustomerCreationException;
-import africa.springCore.delichopsbackend.exception.UserNotFoundException;
+import africa.springCore.delichopsbackend.exception.*;
 import africa.springCore.delichopsbackend.services.customerServices.CustomerService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
@@ -76,5 +74,19 @@ public class CustomerControllers {
                 customerService.retrieveAll(pageable);
 
         return ResponseEntity.ok(customers);
+    }
+
+    @Operation(summary = "Update a customer")
+    @PatchMapping("/{id}")
+    public ResponseEntity<CustomerResponseDto> updateCustomer(
+            @Valid @PathVariable(name = "id") Long id,
+            @Valid @RequestBody CustomerUpdateRequest customerUpdateRequest
+    ) throws DeliChopsException, CustomerCreationException, CustomerUpdateException {
+        {
+            CustomerResponseDto customer =
+                    customerService.updateCustomer(id, customerUpdateRequest);
+
+            return ResponseEntity.ok(customer);
+        }
     }
 }
