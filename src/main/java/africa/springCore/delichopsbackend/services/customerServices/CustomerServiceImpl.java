@@ -156,7 +156,6 @@ public class CustomerServiceImpl implements CustomerService {
         }
         if (customerUpdateRequest.getPhoneNumber() != null && !StringUtils.isEmpty(customerUpdateRequest.getPhoneNumber())) {
             allFieldsAreEmpty = false;
-            System.err.println(customerUpdateRequest.getPhoneNumber());
             validatePhoneNumberDuplicity(customerUpdateRequest.getPhoneNumber());
             existingCustomerBioData.setPhoneNumber(customerUpdateRequest.getPhoneNumber());
         }
