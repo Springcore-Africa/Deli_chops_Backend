@@ -9,13 +9,8 @@ import lombok.Setter;
 
 @Setter
 @Getter
-public class CustomerCreationRequest {
-    @NotBlank(message = "Password is mandatory")
-    @Size(min = 8, message = "Password must be at least 8 characters long")
-    private String password;
+public class CustomerUpdateRequest {
 
-    @NotBlank(message = "Email address is mandatory")
-    @Email(message = "Email address should be valid")
     private String emailAddress;
 
     private String firstName;
