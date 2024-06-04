@@ -21,6 +21,8 @@ public class VendorRegistrationDocument extends BaseEntity {
     @Column(name = "id")
     private Long id;
 
+    private Long vendorId;
+
     @Column(name = "name")
     private String name;
 

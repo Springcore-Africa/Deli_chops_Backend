@@ -9,6 +9,7 @@ public class SecurityUtils {
                 "/api/v1/customers",
                 "/api/v1/health-check",
                 "/api/v1/customers/**",
+                "/api/v1/vendors/**",
                 LOGIN_ENDPOINT,
                 "/v2/api-docs",
                 "/v3/api-docs",

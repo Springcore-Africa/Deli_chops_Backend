@@ -1,5 +1,6 @@
 package africa.springCore.delichopsbackend.core.portfolio.vendor.domain.model;
 
+import africa.springCore.delichopsbackend.common.enums.ApprovalStatus;
 import africa.springCore.delichopsbackend.core.base.domain.model.BaseEntity;
 import africa.springCore.delichopsbackend.core.base.domain.model.BioData;
 import jakarta.persistence.*;
@@ -26,7 +27,7 @@ public class Vendor extends BaseEntity {
     private String businessName;
 
     @Column(name = "status")
-    private String status;
+    private ApprovalStatus approvalStatus;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private BioData bioData;

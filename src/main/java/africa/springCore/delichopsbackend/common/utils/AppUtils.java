@@ -10,6 +10,8 @@ public class AppUtils {
     public static final String USERNAME_VALUE = "username";
     public static final String CLM_VALUE = "username";
     public static final String CLAIM_VALUE = "claim";
+    public static final String APPROVE = "approve";
+    public static final String REJECT = "reject";
     public static final String ROLES_VALUE = "roles";
     public static final String USER = "user";
     public static final String ERROR_VALUE = "error";

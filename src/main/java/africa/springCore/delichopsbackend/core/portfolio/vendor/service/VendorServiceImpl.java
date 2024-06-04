@@ -1,7 +1,10 @@
 package africa.springCore.delichopsbackend.core.portfolio.vendor.service;
 
+import africa.springCore.delichopsbackend.common.enums.ApprovalStatus;
 import africa.springCore.delichopsbackend.core.base.domain.dtos.response.BioDataResponseDto;
 import africa.springCore.delichopsbackend.core.base.domain.model.BioData;
+import africa.springCore.delichopsbackend.core.portfolio.customer.domain.model.Customer;
+import africa.springCore.delichopsbackend.core.portfolio.customer.domain.repository.CustomerRepository;
 import africa.springCore.delichopsbackend.core.portfolio.vendor.domain.dtos.requests.VendorCreationRequest;
 import africa.springCore.delichopsbackend.core.portfolio.vendor.domain.dtos.requests.VendorUpdateRequest;
 import africa.springCore.delichopsbackend.core.portfolio.vendor.domain.dtos.responses.VendorListingDto;
@@ -37,6 +40,7 @@ public class VendorServiceImpl implements VendorService {
 
     private final DeliMapper deliMapper;
     private final VendorRepository vendorRepository;
+    private final CustomerRepository customerRepository;
 
     @Override
     public VendorResponseDto findByEmail(String emailAddress) throws MapperException, UserNotFoundException {
@@ -58,7 +62,9 @@ public class VendorServiceImpl implements VendorService {
         String encodedPassword = passwordEncoder.encode(vendorCreationRequest.getPassword());
         vendorBioData.setPassword(encodedPassword);
         Vendor vendor = new Vendor();
+        vendor.setBusinessName(vendorCreationRequest.getBusinessName());
         vendor.setBioData(vendorBioData);
+        vendor.setApprovalStatus(ApprovalStatus.PENDING_REVIEW);
         Vendor savedVendor = vendorRepository.save(vendor);
         String savedVendorAsString = deliMapper.writeValueAsString(savedVendor);
         try {
@@ -76,13 +82,19 @@ public class VendorServiceImpl implements VendorService {
     }
 
     private void validateEmailDuplicity(String emailAddress) throws VendorCreationException {
-        Optional<Vendor> foundVendorByEmail = vendorRepository.findByBioData_EmailAddress(emailAddress);
         if (emailAddress == null || StringUtils.isEmpty(emailAddress)) {
             throw new VendorCreationException("Validation failed, emailAddress cannot be null");
         }
+        Optional<Vendor> foundVendorByEmail = vendorRepository.findByBioData_EmailAddress(emailAddress);
+        Optional<Customer> foundCustomerByEmail = customerRepository.findByBioData_EmailAddress(emailAddress);
         if (foundVendorByEmail.isPresent()) {
             throw new VendorCreationException(
                     String.format(VENDOR_WITH_EMAIL_ALREADY_EXISTS, emailAddress)
+            );
+        }
+        if (foundCustomerByEmail.isPresent()) {
+            throw new VendorCreationException(
+                    String.format(USER_WITH_EMAIL_ALREADY_EXISTS, emailAddress)
             );
         }
     }
@@ -92,9 +104,15 @@ public class VendorServiceImpl implements VendorService {
             throw new VendorCreationException("Validation failed, phone number cannot be null");
         }
         Optional<Vendor> foundVendorByNumber = vendorRepository.findByBioData_PhoneNumber(phoneNumber);
+        Optional<Customer> foundCustomerByNumber = customerRepository.findByBioData_PhoneNumber(phoneNumber);
         if (foundVendorByNumber.isPresent()) {
             throw new VendorCreationException(
                     String.format(VENDOR_WITH_PHONE_NUMBER_ALREADY_EXISTS, phoneNumber)
+            );
+        }
+        if (foundCustomerByNumber.isPresent()) {
+            throw new VendorCreationException(
+                    String.format(USER_WITH_PHONE_NUMBER_ALREADY_EXISTS, phoneNumber)
             );
         }
     }
@@ -185,6 +203,15 @@ public class VendorServiceImpl implements VendorService {
             existingVendor.setBioData(existingVendorBioData);
             return getVendorResponseDto(vendorRepository.save(existingVendor));
         }
+    }
+
+    @Override
+    public VendorResponseDto approveVendor(Long id, String actionName) throws UserNotFoundException, MapperException {
+        findById(id);
+        Vendor existingVendor = vendorRepository.findById(id).get();
+        if (actionName.equalsIgnoreCase(APPROVE)) existingVendor.setApprovalStatus(ApprovalStatus.APPROVED);
+        if (actionName.equalsIgnoreCase(REJECT)) existingVendor.setApprovalStatus(ApprovalStatus.REJECTED);
+        return getVendorResponseDto(vendorRepository.save(existingVendor));
     }
 
     private VendorListingDto getVendorListingDto(Page<VendorResponseDto> pagedVendors, Pageable pageable) {
