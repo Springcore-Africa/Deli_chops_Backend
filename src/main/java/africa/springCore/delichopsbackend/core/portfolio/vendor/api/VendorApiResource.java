@@ -1,5 +1,7 @@
 package africa.springCore.delichopsbackend.core.portfolio.vendor.api;
 
+import africa.springCore.delichopsbackend.core.portfolio.customer.domain.repository.CustomerRepository;
+import africa.springCore.delichopsbackend.core.portfolio.customer.service.CustomerService;
 import africa.springCore.delichopsbackend.core.portfolio.vendor.domain.dtos.requests.VendorCreationRequest;
 import africa.springCore.delichopsbackend.core.portfolio.vendor.domain.dtos.requests.VendorUpdateRequest;
 import africa.springCore.delichopsbackend.core.portfolio.vendor.domain.dtos.responses.VendorListingDto;
@@ -87,6 +89,20 @@ public class VendorApiResource {
         {
             VendorResponseDto vendor =
                     vendorService.updateVendor(id, VendorUpdateRequest);
+
+            return ResponseEntity.ok(vendor);
+        }
+    }
+
+    @Operation(summary = "Approve or reject a Vendor")
+    @PostMapping("/{id}/approval")
+    public ResponseEntity<VendorResponseDto> approveVendor(
+            @Valid @PathVariable(name = "id") Long id,
+            @RequestParam(name = "actionName", defaultValue = "reject") String actionName
+    ) throws UserNotFoundException, MapperException {
+        {
+            VendorResponseDto vendor =
+                    vendorService.approveVendor(id, actionName);
 
             return ResponseEntity.ok(vendor);
         }

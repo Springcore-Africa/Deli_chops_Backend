@@ -20,6 +20,7 @@ public class VendorCreationRequest {
     private String emailAddress;
 
     private String firstName;
+    private String businessName;
 
     private String lastName;
 

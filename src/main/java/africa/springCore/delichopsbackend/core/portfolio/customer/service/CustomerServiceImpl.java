@@ -12,6 +12,8 @@ import africa.springCore.delichopsbackend.core.portfolio.customer.domain.model.C
 import africa.springCore.delichopsbackend.core.portfolio.customer.domain.repository.CustomerRepository;
 import africa.springCore.delichopsbackend.common.enums.Role;
 import africa.springCore.delichopsbackend.common.utils.DeliMapper;
+import africa.springCore.delichopsbackend.core.portfolio.vendor.domain.model.Vendor;
+import africa.springCore.delichopsbackend.core.portfolio.vendor.domain.repository.VendorRepository;
 import africa.springCore.delichopsbackend.infrastructure.exception.DeliChopsException;
 import africa.springCore.delichopsbackend.infrastructure.exception.MapperException;
 import africa.springCore.delichopsbackend.infrastructure.exception.UserNotFoundException;
@@ -38,6 +40,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     private final DeliMapper deliMapper;
     private final CustomerRepository customerRepository;
+    private final VendorRepository vendorRepository;
 
     @Override
     public CustomerResponseDto createCustomer(CustomerCreationRequest customerCreationRequest) throws DeliChopsException, CustomerCreationException {
@@ -66,13 +69,19 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     private void validateEmailDuplicity(String emailAddress) throws CustomerCreationException {
-        Optional<Customer> foundCustomerByEmail = customerRepository.findByBioData_EmailAddress(emailAddress);
         if (emailAddress == null || StringUtils.isEmpty(emailAddress)) {
             throw new CustomerCreationException("Validation failed, emailAddress cannot be null");
         }
+        Optional<Customer> foundCustomerByEmail = customerRepository.findByBioData_EmailAddress(emailAddress);
+        Optional<Vendor> foundVendorByEmail = vendorRepository.findByBioData_EmailAddress(emailAddress);
         if (foundCustomerByEmail.isPresent()) {
             throw new CustomerCreationException(
                     String.format(CUSTOMER_WITH_EMAIL_ALREADY_EXISTS, emailAddress)
+            );
+        }
+        if (foundVendorByEmail.isPresent()) {
+            throw new CustomerCreationException(
+                    String.format(USER_WITH_EMAIL_ALREADY_EXISTS, emailAddress)
             );
         }
     }
@@ -82,9 +91,15 @@ public class CustomerServiceImpl implements CustomerService {
             throw new CustomerCreationException("Validation failed, phone number cannot be null");
         }
         Optional<Customer> foundCustomerByNumber = customerRepository.findByBioData_PhoneNumber(phoneNumber);
+        Optional<Vendor> foundVendorByNumber = vendorRepository.findByBioData_PhoneNumber(phoneNumber);
         if (foundCustomerByNumber.isPresent()) {
             throw new CustomerCreationException(
                     String.format(CUSTOMER_WITH_PHONE_NUMBER_ALREADY_EXISTS, phoneNumber)
+            );
+        }
+        if (foundVendorByNumber.isPresent()) {
+            throw new CustomerCreationException(
+                    String.format(USER_WITH_PHONE_NUMBER_ALREADY_EXISTS, phoneNumber)
             );
         }
     }

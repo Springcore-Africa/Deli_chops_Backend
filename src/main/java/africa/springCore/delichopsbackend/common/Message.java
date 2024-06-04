@@ -14,6 +14,7 @@ public class Message {
 	public static final String USER_NOT_FOUND = "User not found";
 	public static final String INVALID_TOKEN = "Invalid token";
 	public static final String USER_WITH_EMAIL_NOT_FOUND = "User with email %s not found";
+	public static final String USER_WITH_EMAIL_ALREADY_EXISTS = "User with email %s already exists";
 	public static final String USER_WITH_ID_NOT_FOUND = "User with id %s not found";
 	public static final String MINISTER_WITH_ID_NOT_FOUND = "Minister with id %s not found";
 	public static final String DEPARTMENT_WITH_ID_NOT_FOUND = "Department with id %s not found";
@@ -21,6 +22,7 @@ public class Message {
 	public static final String USER_ADDRESS_WITH_ID_NOT_FOUND= "%s address with id %s not found";
 	public static final String VENDOR_WITH_EMAIL_ALREADY_EXISTS = "Vendor with email %s already exists";
 	public static final String CUSTOMER_WITH_PHONE_NUMBER_ALREADY_EXISTS = "Customer with phone number %s already exists";
+	public static final String USER_WITH_PHONE_NUMBER_ALREADY_EXISTS = "User with phone number %s already exists";
 	public static final String VENDOR_WITH_PHONE_NUMBER_ALREADY_EXISTS = "Vendor with phone number %s already exists";
 	public static final String ACC_VERIFY_FAILURE = "account verification failed";
 	public static final String PASSWORDS_DO_NOT_MATCH = "Passwords do not match";
