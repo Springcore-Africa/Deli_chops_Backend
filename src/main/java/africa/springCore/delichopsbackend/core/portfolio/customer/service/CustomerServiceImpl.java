@@ -1,13 +1,13 @@
 package africa.springCore.delichopsbackend.core.portfolio.customer.service;
 
-import africa.springCore.delichopsbackend.core.domain.dtos.response.BioDataResponseDto;
+import africa.springCore.delichopsbackend.core.base.domain.dtos.response.BioDataResponseDto;
 import africa.springCore.delichopsbackend.core.portfolio.customer.domain.dtos.requests.CustomerCreationRequest;
 import africa.springCore.delichopsbackend.core.portfolio.customer.domain.dtos.requests.CustomerUpdateRequest;
 import africa.springCore.delichopsbackend.core.portfolio.customer.domain.dtos.responses.CustomerListingDto;
 import africa.springCore.delichopsbackend.core.portfolio.customer.domain.dtos.responses.CustomerResponseDto;
 import africa.springCore.delichopsbackend.core.portfolio.customer.exception.CustomerCreationException;
 import africa.springCore.delichopsbackend.core.portfolio.customer.exception.CustomerUpdateException;
-import africa.springCore.delichopsbackend.core.domain.model.BioData;
+import africa.springCore.delichopsbackend.core.base.domain.model.BioData;
 import africa.springCore.delichopsbackend.core.portfolio.customer.domain.model.Customer;
 import africa.springCore.delichopsbackend.core.portfolio.customer.domain.repository.CustomerRepository;
 import africa.springCore.delichopsbackend.common.enums.Role;

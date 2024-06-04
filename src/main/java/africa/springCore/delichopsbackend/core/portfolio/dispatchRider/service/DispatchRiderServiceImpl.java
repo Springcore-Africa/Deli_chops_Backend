@@ -1,6 +1,6 @@
 package africa.springCore.delichopsbackend.core.portfolio.dispatchRider.service;
 
-import africa.springCore.delichopsbackend.core.domain.dtos.response.BioDataResponseDto;
+import africa.springCore.delichopsbackend.core.base.domain.dtos.response.BioDataResponseDto;
 import africa.springCore.delichopsbackend.core.portfolio.dispatchRider.domain.model.DispatchRider;
 import africa.springCore.delichopsbackend.core.portfolio.dispatchRider.domain.repository.DispatchRiderRepository;
 import africa.springCore.delichopsbackend.core.portfolio.dispatchRider.domain.dtos.responses.DispatchRiderResponseDto;

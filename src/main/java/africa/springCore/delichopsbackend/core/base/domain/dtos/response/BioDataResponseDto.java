@@ -1,4 +1,4 @@
-package africa.springCore.delichopsbackend.core.domain.dtos.response;
+package africa.springCore.delichopsbackend.core.base.domain.dtos.response;
 
 import africa.springCore.delichopsbackend.common.enums.Role;
 import lombok.*;

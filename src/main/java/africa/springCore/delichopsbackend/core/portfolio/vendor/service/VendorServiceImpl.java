@@ -1,7 +1,7 @@
 package africa.springCore.delichopsbackend.core.portfolio.vendor.service;
 
-import africa.springCore.delichopsbackend.core.domain.dtos.response.BioDataResponseDto;
-import africa.springCore.delichopsbackend.core.domain.model.BioData;
+import africa.springCore.delichopsbackend.core.base.domain.dtos.response.BioDataResponseDto;
+import africa.springCore.delichopsbackend.core.base.domain.model.BioData;
 import africa.springCore.delichopsbackend.core.portfolio.vendor.domain.dtos.requests.VendorCreationRequest;
 import africa.springCore.delichopsbackend.core.portfolio.vendor.domain.dtos.requests.VendorUpdateRequest;
 import africa.springCore.delichopsbackend.core.portfolio.vendor.domain.dtos.responses.VendorListingDto;

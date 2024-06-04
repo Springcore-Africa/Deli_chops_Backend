@@ -1,6 +1,6 @@
 package africa.springCore.delichopsbackend.infrastructure.security.clmUser;
 
-import africa.springCore.delichopsbackend.core.domain.model.BioData;
+import africa.springCore.delichopsbackend.core.base.domain.model.BioData;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

@@ -1,4 +1,4 @@
-package africa.springCore.delichopsbackend.core.domain.dtos.request;
+package africa.springCore.delichopsbackend.core.base.domain.dtos.request;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
