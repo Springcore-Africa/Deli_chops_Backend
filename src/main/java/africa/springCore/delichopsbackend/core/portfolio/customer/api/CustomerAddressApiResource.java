@@ -17,8 +17,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 import static africa.springCore.delichopsbackend.common.enums.Role.CUSTOMER;
 
 @RequestMapping("api/v1/customers/{customerId}/address")
@@ -37,7 +35,7 @@ public class CustomerAddressApiResource {
             @RequestBody AddressCreationRequest addressCreationRequest) throws DeliChopsException, CustomerCreationException {
         customerService.findById(Long.valueOf(customerId));
         AddressResponseDto postAddressesResponse =
-                addressService.createCustomerAddress(addressCreationRequest, CUSTOMER, Long.valueOf(customerId));
+                addressService.createUserAddress(addressCreationRequest, CUSTOMER, Long.valueOf(customerId));
 
         return ResponseEntity.ok(postAddressesResponse);
     }

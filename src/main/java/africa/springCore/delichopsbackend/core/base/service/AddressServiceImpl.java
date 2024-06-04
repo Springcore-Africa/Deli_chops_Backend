@@ -24,10 +24,8 @@ public class AddressServiceImpl implements AddressService {
     private final DeliMapper deliMapper;
 
     @Override
-    public AddressResponseDto createCustomerAddress(AddressCreationRequest addressCreationRequest, Role userType, Long userId) throws MapperException {
-        System.out.println("Reading...");
+    public AddressResponseDto createUserAddress(AddressCreationRequest addressCreationRequest, Role userType, Long userId) throws MapperException {
         Address address = deliMapper.readValue(addressCreationRequest, Address.class);
-        System.out.println("Post Reading..."+address);
         address.setUserType(userType);
         address.setUserId(userId);
         return this.getAddressCreationResponse(addressRepository.save(address));

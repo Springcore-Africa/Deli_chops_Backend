@@ -9,7 +9,7 @@ import africa.springCore.delichopsbackend.infrastructure.exception.MapperExcepti
 import org.springframework.data.domain.Pageable;
 
 public interface AddressService {
-    AddressResponseDto createCustomerAddress(AddressCreationRequest addressCreationRequest, Role userType, Long userId) throws MapperException;
+    AddressResponseDto createUserAddress(AddressCreationRequest addressCreationRequest, Role userType, Long userId) throws MapperException;
 
     AddressResponseDto findById(Long id, Role userType) throws MapperException, AddressNotFoundException;
 
