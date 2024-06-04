@@ -29,8 +29,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static africa.springCore.delichopsbackend.common.Message.*;
-import static africa.springCore.delichopsbackend.common.utils.AppUtils.EMAIL_VALUE;
-import static africa.springCore.delichopsbackend.common.utils.AppUtils.PHONE_NUMBER;
+import static africa.springCore.delichopsbackend.common.utils.AppUtils.*;
 
 @Service
 @RequiredArgsConstructor
@@ -137,6 +136,8 @@ public class VendorServiceImpl implements VendorService {
         BioData bioData = new BioData();
         if (searchParam.equals(EMAIL_VALUE)) bioData.setEmailAddress(value);
         else if (searchParam.equals(PHONE_NUMBER)) bioData.setPhoneNumber(value);
+        else if (searchParam.equals(FIRST_NAME)) bioData.setFirstName(value);
+        else if (searchParam.equals(LAST_NAME)) bioData.setLastName(value);
         criteria.setBioData(bioData);
         Example<Vendor> example = Example.of(criteria, matcher);
         Page<VendorResponseDto> pagedVendors = vendorRepository.findAll(example, pageable).map((vendor) -> {

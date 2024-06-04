@@ -1,19 +1,18 @@
 package africa.springCore.delichopsbackend.core.portfolio.vendor.domain.model;
 
 import africa.springCore.delichopsbackend.core.base.domain.model.BaseEntity;
-import africa.springCore.delichopsbackend.core.base.domain.model.BioData;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.io.Serial;
 
 @Entity
-@Table(name = "vendor")
+@Table(name = "vendor_registration_document")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor(staticName = "instance", access = AccessLevel.PRIVATE)
-public class Vendor extends BaseEntity {
+public class VendorRegistrationDocument extends BaseEntity {
     @Serial
     private static final long serialVersionUID = -7466640123337613601L;
 
@@ -22,12 +21,10 @@ public class Vendor extends BaseEntity {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "business_name")
-    private String businessName;
+    @Column(name = "name")
+    private String name;
 
-    @Column(name = "status")
-    private String status;
+    @Column(name = "reference_url")
+    private String referenceUrl;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private BioData bioData;
 }
