@@ -1,7 +1,7 @@
 package africa.springCore.delichopsbackend.infrastructure.security.clmUser;
 
-import africa.springCore.delichopsbackend.core.domain.model.BioData;
-import africa.springCore.delichopsbackend.core.domain.repository.BioDataRepository;
+import africa.springCore.delichopsbackend.core.base.domain.model.BioData;
+import africa.springCore.delichopsbackend.core.base.domain.repository.BioDataRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

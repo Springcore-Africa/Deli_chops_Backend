@@ -1,13 +1,13 @@
 package africa.springCore.delichopsbackend.infrastructure.security.filters;
 
 import africa.springCore.delichopsbackend.common.enums.Role;
-import africa.springCore.delichopsbackend.core.domain.dtos.request.LoginRequest;
-import africa.springCore.delichopsbackend.core.domain.dtos.response.BioDataResponseDto;
+import africa.springCore.delichopsbackend.core.base.domain.dtos.request.LoginRequest;
+import africa.springCore.delichopsbackend.core.base.domain.dtos.response.BioDataResponseDto;
 import africa.springCore.delichopsbackend.infrastructure.exception.DeliChopsException;
 import africa.springCore.delichopsbackend.infrastructure.exception.MapperException;
 import africa.springCore.delichopsbackend.infrastructure.exception.UserNotFoundException;
-import africa.springCore.delichopsbackend.core.service.service.AdminService;
-import africa.springCore.delichopsbackend.core.service.BioDataService;
+import africa.springCore.delichopsbackend.core.portfolio.admin.service.AdminService;
+import africa.springCore.delichopsbackend.core.base.service.BioDataService;
 import africa.springCore.delichopsbackend.core.portfolio.customer.service.CustomerService;
 import africa.springCore.delichopsbackend.core.portfolio.dispatchRider.service.DispatchRiderService;
 import africa.springCore.delichopsbackend.core.portfolio.vendor.service.VendorService;

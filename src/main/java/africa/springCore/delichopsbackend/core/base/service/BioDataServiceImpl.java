@@ -1,8 +1,8 @@
-package africa.springCore.delichopsbackend.core.service;
+package africa.springCore.delichopsbackend.core.base.service;
 
-import africa.springCore.delichopsbackend.core.domain.dtos.response.BioDataResponseDto;
-import africa.springCore.delichopsbackend.core.domain.model.BioData;
-import africa.springCore.delichopsbackend.core.domain.repository.BioDataRepository;
+import africa.springCore.delichopsbackend.core.base.domain.dtos.response.BioDataResponseDto;
+import africa.springCore.delichopsbackend.core.base.domain.repository.BioDataRepository;
+import africa.springCore.delichopsbackend.core.base.domain.model.BioData;
 import africa.springCore.delichopsbackend.infrastructure.exception.MapperException;
 import africa.springCore.delichopsbackend.infrastructure.exception.UserNotFoundException;
 import africa.springCore.delichopsbackend.common.utils.DeliMapper;

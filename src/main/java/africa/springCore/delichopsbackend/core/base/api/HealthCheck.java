@@ -1,4 +1,4 @@
-package africa.springCore.delichopsbackend.core.api;
+package africa.springCore.delichopsbackend.core.base.api;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

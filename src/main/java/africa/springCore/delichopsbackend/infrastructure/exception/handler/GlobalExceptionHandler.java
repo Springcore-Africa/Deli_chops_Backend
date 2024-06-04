@@ -21,23 +21,24 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler
     public ResponseEntity<ExceptionResponse> deliChopsException(DeliChopsException ex){
+        log.error("DeliChopsException {}", ex.getLocalizedMessage());
         exceptionResponse.setMessage(ex.getLocalizedMessage());
         exceptionResponse.setTimestamp(LocalDateTime.now());
         exceptionResponse.setErrorCode(BAD_REQUEST.value());
-        log.error("DeliChopsException::>> {}", exceptionResponse);
         return new ResponseEntity<>(exceptionResponse, BAD_REQUEST);
     }
     @ExceptionHandler
-    public ResponseEntity<ExceptionResponse> deliChopsException(Exception ex){
+    public ResponseEntity<ExceptionResponse> exception(Exception ex){
+        log.error("Exception::>> {}", ex.toString());
         exceptionResponse.setMessage(ex.getMessage());
         exceptionResponse.setTimestamp(LocalDateTime.now());
         exceptionResponse.setErrorCode(BAD_REQUEST.value());
-        log.error("Exception::>> {}", exceptionResponse);
         return new ResponseEntity<>(exceptionResponse, BAD_REQUEST);
     }
 
     @ExceptionHandler
     public ResponseEntity<ExceptionResponse> handleValidationExceptions(MethodArgumentNotValidException ex) {
+        log.error("MethodArgumentNotValidException::>> {}", ex.toString());
         Map<String, String> errors = new HashMap<>();
         ex.getBindingResult().getAllErrors().forEach((error) -> {
             String fieldName = ((FieldError) error).getField();
@@ -47,7 +48,6 @@ public class GlobalExceptionHandler {
         exceptionResponse.setMessage(errors.toString());
         exceptionResponse.setTimestamp(LocalDateTime.now());
         exceptionResponse.setErrorCode(BAD_REQUEST.value());
-        log.error("MethodArgumentNotValidException::>> {}", exceptionResponse);
         return new ResponseEntity<>(exceptionResponse, BAD_REQUEST);
     }
 }

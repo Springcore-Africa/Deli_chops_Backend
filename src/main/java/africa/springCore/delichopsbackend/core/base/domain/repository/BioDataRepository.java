@@ -1,6 +1,6 @@
-package africa.springCore.delichopsbackend.core.domain.repository;
+package africa.springCore.delichopsbackend.core.base.domain.repository;
 
-import africa.springCore.delichopsbackend.core.domain.model.BioData;
+import africa.springCore.delichopsbackend.core.base.domain.model.BioData;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

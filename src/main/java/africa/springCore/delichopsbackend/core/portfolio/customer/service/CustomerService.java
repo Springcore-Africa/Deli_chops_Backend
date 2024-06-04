@@ -6,7 +6,6 @@ import africa.springCore.delichopsbackend.core.portfolio.customer.domain.dtos.re
 import africa.springCore.delichopsbackend.core.portfolio.customer.domain.dtos.responses.CustomerResponseDto;
 import africa.springCore.delichopsbackend.core.portfolio.customer.exception.CustomerCreationException;
 import africa.springCore.delichopsbackend.core.portfolio.customer.exception.CustomerUpdateException;
-import africa.springCore.delichopsbackend.exception.*;
 import africa.springCore.delichopsbackend.infrastructure.exception.DeliChopsException;
 import africa.springCore.delichopsbackend.infrastructure.exception.MapperException;
 import africa.springCore.delichopsbackend.infrastructure.exception.UserNotFoundException;

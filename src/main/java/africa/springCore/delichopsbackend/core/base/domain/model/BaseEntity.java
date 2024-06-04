@@ -1,4 +1,4 @@
-package africa.springCore.delichopsbackend.core.domain.model;
+package africa.springCore.delichopsbackend.core.base.domain.model;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;

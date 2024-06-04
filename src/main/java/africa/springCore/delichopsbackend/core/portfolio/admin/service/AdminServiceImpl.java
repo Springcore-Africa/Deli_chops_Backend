@@ -1,6 +1,6 @@
-package africa.springCore.delichopsbackend.core.service.service;
+package africa.springCore.delichopsbackend.core.portfolio.admin.service;
 
-import africa.springCore.delichopsbackend.core.domain.dtos.response.BioDataResponseDto;
+import africa.springCore.delichopsbackend.core.base.domain.dtos.response.BioDataResponseDto;
 import africa.springCore.delichopsbackend.core.portfolio.admin.domain.dtos.responses.AdminResponseDto;
 import africa.springCore.delichopsbackend.core.portfolio.admin.domain.model.Admin;
 import africa.springCore.delichopsbackend.core.portfolio.admin.domain.repository.AdminRepository;
