@@ -12,6 +12,7 @@ import africa.springCore.delichopsbackend.core.portfolio.customer.service.Custom
 import africa.springCore.delichopsbackend.core.portfolio.dispatchRider.service.DispatchRiderService;
 import africa.springCore.delichopsbackend.core.portfolio.vendor.service.VendorService;
 import africa.springCore.delichopsbackend.common.utils.JwtUtility;
+import africa.springCore.delichopsbackend.infrastructure.exception.handler.ExceptionResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
@@ -27,6 +28,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -48,7 +50,7 @@ public class DeliChopsAuthenticationFilter extends UsernamePasswordAuthenticatio
 
 
     @Override
-    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
+    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) {
         String email=EMPTY_SPACE_VALUE;
         try {
             LoginRequest loginRequest = mapper.readValue(request.getInputStream(), LoginRequest.class);
@@ -60,13 +62,14 @@ public class DeliChopsAuthenticationFilter extends UsernamePasswordAuthenticatio
             System.out.println("Authenticated");
             SecurityContextHolder.getContext().setAuthentication(authResult);
             return authResult;
-        }catch (IOException exception){
-            Map<String, String> errors = new HashMap<>();
-            errors.put(ERROR_VALUE, exception.getMessage());
+        }catch (Exception exception){
+            ExceptionResponse exceptionResponse = new ExceptionResponse();
+            exceptionResponse.setMessage(exception.getMessage());
+            exceptionResponse.setErrorCode(HttpStatus.UNAUTHORIZED.value());
             response.setContentType(APPLICATION_JSON_VALUE);
-            response.setStatus(HttpStatus.FORBIDDEN.value());
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
             try {
-                mapper.writeValue(response.getOutputStream(), errors);
+                mapper.writeValue(response.getOutputStream(), exceptionResponse);
             } catch (IOException e) {
                 throw new RuntimeException(e.getMessage());
             }

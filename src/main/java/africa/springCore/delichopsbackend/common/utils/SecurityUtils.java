@@ -6,10 +6,7 @@ public class SecurityUtils {
 
     public static String[] getAuthWhiteList() {
         return new String[]{
-                "/api/v1/customers",
                 "/api/v1/health-check",
-                "/api/v1/customers/**",
-                "/api/v1/vendors/**",
                 LOGIN_ENDPOINT,
                 "/v2/api-docs",
                 "/v3/api-docs",
@@ -21,6 +18,27 @@ public class SecurityUtils {
                 "/swagger-ui/**",
                 "webjars/**",
                 "/swagger-ui.html"
+        };
+    }
+
+    public static String[] getPostUrlWhiteList() {
+        return new String[]{
+                "/api/v1/customers",
+                "/api/v1/dispatch-riders",
+                "/api/v1/vendors"
+        };
+    }
+
+    public static String[] getGetUrlWhiteList() {
+        return new String[]{
+                "/api/v1/vendors",
+                "/api/v1/vendors/*"
+        };
+    }
+
+    public static String[] getVendorApprovalUrl() {
+        return new String[]{
+                "/api/v1/vendors/*/approval"
         };
     }
 

@@ -52,7 +52,7 @@ public class DeliChopsAuthorizationFilter extends OncePerRequestFilter {
             authorize(request);
             System.out.println("Authorized");
             filterChain.doFilter(request, response);
-          } catch (Exception exception) {
+        } catch (Exception exception) {
             log.info("DELI-CHOPS Authorization Exception {}", exception.getMessage());
             Map<String, String> errors = new HashMap<>();
             errors.put(ERROR_VALUE, exception.getMessage());
@@ -65,7 +65,7 @@ public class DeliChopsAuthorizationFilter extends OncePerRequestFilter {
     private void authorize(HttpServletRequest request) throws AuthenticationException {
         String authorizationHeader = request.getHeader(AUTHORIZATION);
         System.out.println(authorizationHeader);
-            boolean isValidAuthorizationHeader = authorizationHeader != null && authorizationHeader.startsWith(TOKEN_PREFIX);
+        boolean isValidAuthorizationHeader = authorizationHeader != null && authorizationHeader.startsWith(TOKEN_PREFIX);
         if (isValidAuthorizationHeader) {
             String token = parseTokenFrom(authorizationHeader);
             authorize(token);
