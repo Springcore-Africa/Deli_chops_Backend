@@ -12,5 +12,6 @@ import org.springframework.context.annotation.Configuration;
 public class ApplicationProperty {
 
     private String jwtSigningSecret;
+    private String adminInvitationClientUrl;
 
 }

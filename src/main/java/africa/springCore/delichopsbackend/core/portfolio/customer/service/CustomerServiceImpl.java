@@ -129,14 +129,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public CustomerListingDto retrieveAll(Pageable pageable) {
-        Page<CustomerResponseDto> pagedCustomers = customerRepository.findAll(pageable).map((customer) -> {
-            try {
-                return deliMapper.readValue(customer, CustomerResponseDto.class);
-            } catch (MapperException e) {
-                e.printStackTrace();
-            }
-            return null;
-        });
+        Page<Customer> pagedCustomers = customerRepository.findAll(pageable);
         return getCustomerListingDto(pagedCustomers);
     }
 
@@ -151,14 +144,7 @@ public class CustomerServiceImpl implements CustomerService {
         else if (searchParam.equals(PHONE_NUMBER)) bioData.setPhoneNumber(value);
         criteria.setBioData(bioData);
         Example<Customer> example = Example.of(criteria, matcher);
-        Page<CustomerResponseDto> pagedCustomers = customerRepository.findAll(example, pageable).map((customer) -> {
-            try {
-                return deliMapper.readValue(customer, CustomerResponseDto.class);
-            } catch (MapperException e) {
-                e.printStackTrace();
-            }
-            return null;
-        });
+        Page<Customer> pagedCustomers = customerRepository.findAll(example, pageable);
         return getCustomerListingDto(pagedCustomers);
     }
 
@@ -198,11 +184,19 @@ public class CustomerServiceImpl implements CustomerService {
         }
     }
 
-    private CustomerListingDto getCustomerListingDto(Page<CustomerResponseDto> pagedCustomers) {
+    private CustomerListingDto getCustomerListingDto(Page<Customer> pagedCustomers) {
+        Page<CustomerResponseDto> customerResponseDtoPage = pagedCustomers.map((customer) -> {
+            try {
+                return deliMapper.readValue(customer, CustomerResponseDto.class);
+            } catch (MapperException e) {
+                e.printStackTrace();
+            }
+            return null;
+        });
         CustomerListingDto customerListingDto = new CustomerListingDto();
-        customerListingDto.setCustomers(pagedCustomers.getContent());
-        customerListingDto.setPageNumber(pagedCustomers.getNumber());
-        customerListingDto.setPageSize(pagedCustomers.getSize());
+        customerListingDto.setCustomers(customerResponseDtoPage.getContent());
+        customerListingDto.setPageNumber(customerResponseDtoPage.getNumber());
+        customerListingDto.setPageSize(customerResponseDtoPage.getSize());
         return customerListingDto;
     }
 }

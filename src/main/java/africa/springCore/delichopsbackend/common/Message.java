@@ -1,9 +1,13 @@
 package africa.springCore.delichopsbackend.common;
 
+import africa.springCore.delichopsbackend.common.data.ApiResponse;
+import org.springframework.http.HttpStatus;
+
 public class Message {
 	
 	public static final String CREATED = "Account has been created successfully";
 	public static final String MAIL_HAS_BEEN_SENT_SUCCESSFULLY = "Mail has been sent successfully";
+	public static final String TOKEN_HAS_BEEN_VERIFIED_SUCCESSFULLY = "Token has been verified successfully";
 	public static final String SENT = "Mail has been sent successfully";
 	public static final String FAILED_TO_GET_ACTIVATION_LINK="Failed to get activation link";
 	public static final String EMAIL_ALREADY_EXIST = "Email has already been used";
@@ -16,6 +20,7 @@ public class Message {
 	public static final String USER_WITH_EMAIL_NOT_FOUND = "User with email %s not found";
 	public static final String USER_WITH_EMAIL_ALREADY_EXISTS = "User with email %s already exists";
 	public static final String USER_WITH_ID_NOT_FOUND = "User with id %s not found";
+	public static final String ADMIN_WITH_ID_NOT_FOUND = "Admin with id %s not found";
 	public static final String MINISTER_WITH_ID_NOT_FOUND = "Minister with id %s not found";
 	public static final String DEPARTMENT_WITH_ID_NOT_FOUND = "Department with id %s not found";
 	public static final String PRODUCT_CATEGORY_WITH_ID_NOT_FOUND = "Product category with id %s not found";
@@ -40,4 +45,13 @@ public class Message {
 	public static final String EVENT_UPDATED_SUCCESSFULLY ="Event has been updated successfully" ;
 	public static final String EVENT_DELETED_SUCCESSFULLY = "Event deleted successfully";
 
+
+
+	public static ApiResponse apiResponse(String message){
+		return ApiResponse.builder()
+				.message (message)
+				.success (true)
+				.statusCode (HttpStatus.OK.value ())
+				.build();
+	}
 }

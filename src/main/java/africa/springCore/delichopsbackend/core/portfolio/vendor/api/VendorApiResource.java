@@ -6,6 +6,7 @@ import africa.springCore.delichopsbackend.core.portfolio.vendor.domain.dtos.requ
 import africa.springCore.delichopsbackend.core.portfolio.vendor.domain.dtos.requests.VendorUpdateRequest;
 import africa.springCore.delichopsbackend.core.portfolio.vendor.domain.dtos.responses.VendorListingDto;
 import africa.springCore.delichopsbackend.core.portfolio.vendor.domain.dtos.responses.VendorResponseDto;
+import africa.springCore.delichopsbackend.core.portfolio.vendor.exception.VendorApprovalFailedException;
 import africa.springCore.delichopsbackend.core.portfolio.vendor.exception.VendorCreationException;
 import africa.springCore.delichopsbackend.core.portfolio.vendor.exception.VendorUpdateException;
 import africa.springCore.delichopsbackend.infrastructure.exception.DeliChopsException;
@@ -99,7 +100,7 @@ public class VendorApiResource {
     public ResponseEntity<VendorResponseDto> approveVendor(
             @Valid @PathVariable(name = "id") Long id,
             @RequestParam(name = "actionName", defaultValue = "reject") String actionName
-    ) throws UserNotFoundException, MapperException {
+    ) throws UserNotFoundException, MapperException, VendorApprovalFailedException {
         {
             VendorResponseDto vendor =
                     vendorService.approveVendor(id, actionName);

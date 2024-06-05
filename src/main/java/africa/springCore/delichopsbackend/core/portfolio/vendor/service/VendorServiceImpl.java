@@ -11,6 +11,7 @@ import africa.springCore.delichopsbackend.core.portfolio.vendor.domain.dtos.resp
 import africa.springCore.delichopsbackend.core.portfolio.vendor.domain.model.Vendor;
 import africa.springCore.delichopsbackend.core.portfolio.vendor.domain.repository.VendorRepository;
 import africa.springCore.delichopsbackend.common.enums.Role;
+import africa.springCore.delichopsbackend.core.portfolio.vendor.exception.VendorApprovalFailedException;
 import africa.springCore.delichopsbackend.core.portfolio.vendor.exception.VendorCreationException;
 import africa.springCore.delichopsbackend.core.portfolio.vendor.exception.VendorUpdateException;
 import africa.springCore.delichopsbackend.common.utils.DeliMapper;
@@ -205,8 +206,11 @@ public class VendorServiceImpl implements VendorService {
     }
 
     @Override
-    public VendorResponseDto approveVendor(Long id, String actionName) throws UserNotFoundException, MapperException {
-        findById(id);
+    public VendorResponseDto approveVendor(Long id, String actionName) throws UserNotFoundException, MapperException, VendorApprovalFailedException {
+        VendorResponseDto vendorResponseDto = findById(id);
+        if (vendorResponseDto.getApprovalStatus() == ApprovalStatus.APPROVED){
+            throw new VendorApprovalFailedException("Vendor is already in approved state.");
+        }
         Vendor existingVendor = vendorRepository.findById(id).get();
         if (actionName.equalsIgnoreCase(APPROVE)) existingVendor.setApprovalStatus(ApprovalStatus.APPROVED);
         if (actionName.equalsIgnoreCase(REJECT)) existingVendor.setApprovalStatus(ApprovalStatus.REJECTED);

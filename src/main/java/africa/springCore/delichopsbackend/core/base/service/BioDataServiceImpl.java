@@ -4,11 +4,13 @@ import africa.springCore.delichopsbackend.core.base.domain.dtos.response.BioData
 import africa.springCore.delichopsbackend.core.base.domain.repository.BioDataRepository;
 import africa.springCore.delichopsbackend.core.base.domain.model.BioData;
 import africa.springCore.delichopsbackend.infrastructure.exception.MapperException;
+import africa.springCore.delichopsbackend.infrastructure.exception.UserAlreadyExistsException;
 import africa.springCore.delichopsbackend.infrastructure.exception.UserNotFoundException;
 import africa.springCore.delichopsbackend.common.utils.DeliMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import static africa.springCore.delichopsbackend.common.Message.ACCOUNT_ALREADY_EXIST;
 import static africa.springCore.delichopsbackend.common.Message.USER_WITH_EMAIL_NOT_FOUND;
 
 @Service
@@ -24,6 +26,14 @@ public class BioDataServiceImpl implements BioDataService {
                 ()-> new UserNotFoundException(String.format(USER_WITH_EMAIL_NOT_FOUND, email))
         );
         return deliMapper.readValue(foundBioData, BioDataResponseDto.class);
+    }
+
+
+    @Override
+    public void validateDuplicateUserExistence(String emailAddress) throws UserAlreadyExistsException {
+        var bioData = bioDataRepository.findByEmailAddress(emailAddress);
+        boolean accountWithGivenEmailAlreadyExist = bioData.isPresent();
+        if (accountWithGivenEmailAlreadyExist) throw new UserAlreadyExistsException(String.format(ACCOUNT_ALREADY_EXIST, emailAddress));
     }
 
 }
