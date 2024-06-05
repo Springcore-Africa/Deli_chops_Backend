@@ -24,7 +24,6 @@ import static africa.springCore.delichopsbackend.common.Message.INVALID_EMAIL_OR
 @Slf4j
 public class DeliChopsAuthenticationProvider implements AuthenticationProvider {
     private final UserDetailsService userDetailsService;
-//    private final PasswordEncoder passwordEncoder;
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
@@ -37,7 +36,6 @@ public class DeliChopsAuthenticationProvider implements AuthenticationProvider {
         Collection<? extends GrantedAuthority> authorities = userDetails.getAuthorities();
 
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-        log.info("Password matches::>> "+passwordEncoder.matches(password, userPassword));
         if (passwordEncoder.matches(password, userPassword)){
             authResult = new UsernamePasswordAuthenticationToken(userEmail, userPassword, authorities);
             return  authResult;

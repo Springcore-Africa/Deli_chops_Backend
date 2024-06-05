@@ -13,6 +13,7 @@ import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
@@ -26,8 +27,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import static africa.springCore.delichopsbackend.common.utils.SecurityUtils.LOGIN_ENDPOINT;
-import static africa.springCore.delichopsbackend.common.utils.SecurityUtils.getAuthWhiteList;
+import static africa.springCore.delichopsbackend.common.enums.Role.ORDINARY_ADMIN;
+import static africa.springCore.delichopsbackend.common.enums.Role.SUPER_ADMIN;
+import static africa.springCore.delichopsbackend.common.utils.SecurityUtils.*;
 
 @Configuration
 @AllArgsConstructor
@@ -57,20 +59,18 @@ public class SecurityConfig {
                 .sessionManagement(c -> c.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(new DeliChopsAuthorizationFilter(jwtUtil), DeliChopsAuthenticationFilter.class)
                 .addFilterAt(authenticationFilter, UsernamePasswordAuthenticationFilter.class)
-//                .exceptionHandling(
-//                        exceptionHandler -> exceptionHandler
-//                                .authenticationEntryPoint(customAuthenticationFailureHandler::onAuthenticationFailure)
-//                )
                 .exceptionHandling(
-                        exceptionHandling -> exceptionHandling
-                                .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
-                                .accessDeniedHandler((request, response, accessDeniedException) -> {
-                                    response.sendRedirect("/error");
-                                })
+                        exceptionHandler -> exceptionHandler
+                                .authenticationEntryPoint(customAuthenticationFailureHandler::onAuthenticationFailure)
                 )
                 .authorizeHttpRequests(c -> c
                         .requestMatchers(getAuthWhiteList())
                         .permitAll()
+                        .requestMatchers(HttpMethod.POST, getPostUrlWhiteList())
+                        .permitAll()
+                        .requestMatchers(HttpMethod.GET, getGetUrlWhiteList())
+                        .permitAll()
+                        .requestMatchers(HttpMethod.POST, getVendorApprovalUrl()).hasAnyRole(ORDINARY_ADMIN.name(), SUPER_ADMIN.name())
                         .anyRequest()
                         .authenticated())
                 .build();

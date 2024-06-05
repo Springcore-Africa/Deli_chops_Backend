@@ -18,8 +18,6 @@ public class DeliChopsUserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        System.out.println("username::>> "+username);
-        System.out.println("User Found::>> "+bioDataRepository.findByEmailAddress(username));
         BioData user = bioDataRepository.findByEmailAddress(username).orElseThrow(
                 () ->
                         new UsernameNotFoundException(
