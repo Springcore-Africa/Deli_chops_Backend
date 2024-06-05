@@ -42,8 +42,11 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductResponseDto postAProduct(Long vendorId, ProductCreationRequest productCreationRequest) throws UserNotFoundException, MapperException, ProductCategoryNotFoundException, ProductCreationFailedException {
         VendorResponseDto vendorResponseDto = vendorService.findById(vendorId);
-        if (vendorResponseDto.getApprovalStatus() != ApprovalStatus.APPROVED){
-            throw new ProductCreationFailedException("Vendor with id "+vendorId+"is not in approved state");
+        if (vendorResponseDto.getApprovalStatus() != ApprovalStatus.APPROVED) {
+            throw new ProductCreationFailedException("Vendor with id " + vendorId + " is not in approved state");
+        }
+        if (productRepository.findByVendorIdAndNameAndCategoryId(vendorId, productCreationRequest.getName(), productCreationRequest.getCategoryId()).isPresent()) {
+            throw new ProductCreationFailedException("Vendor with id " + vendorId + " already created product with name: " + productCreationRequest.getName() + " and category Id " + productCreationRequest.getCategoryId());
         }
         findProductCategoryById(productCreationRequest.getCategoryId());
         if (productCreationRequest.getQuantity() < 1) {
@@ -102,7 +105,7 @@ public class ProductServiceImpl implements ProductService {
             criteria.setName(value);
         } else if (searchParam.equals(CATEGORY_NAME)) {
             ProductCategoryListingDto productCategoryListingDto = productCategoryService.searchByName(value, pageable);
-            if (productCategoryListingDto.getProductCategories().size() > 0){
+            if (productCategoryListingDto.getProductCategories().size() > 0) {
                 criteria.setCategoryId(productCategoryListingDto.getProductCategories().get(0).getId());
             }
         }
