@@ -4,7 +4,7 @@ import africa.springCore.delichopsbackend.core.base.domain.dtos.request.AddressC
 import africa.springCore.delichopsbackend.core.base.domain.dtos.response.AddressListingDto;
 import africa.springCore.delichopsbackend.core.base.domain.dtos.response.AddressResponseDto;
 import africa.springCore.delichopsbackend.core.base.service.AddressService;
-import africa.springCore.delichopsbackend.core.portfolio.customer.exception.CustomerCreationException;
+import africa.springCore.delichopsbackend.core.portfolio.customer.exception.CustomerCreationFailedException;
 import africa.springCore.delichopsbackend.core.portfolio.customer.service.CustomerService;
 import africa.springCore.delichopsbackend.infrastructure.exception.DeliChopsException;
 import io.swagger.v3.oas.annotations.Operation;
@@ -32,7 +32,7 @@ public class CustomerAddressApiResource {
     @PostMapping("")
     public ResponseEntity<AddressResponseDto> createCustomerAddress(
             @PathVariable(name = "customerId") String customerId,
-            @RequestBody AddressCreationRequest addressCreationRequest) throws DeliChopsException, CustomerCreationException {
+            @RequestBody AddressCreationRequest addressCreationRequest) throws DeliChopsException, CustomerCreationFailedException {
         customerService.findById(Long.valueOf(customerId));
         AddressResponseDto postAddressesResponse =
                 addressService.createUserAddress(addressCreationRequest, CUSTOMER, Long.valueOf(customerId));

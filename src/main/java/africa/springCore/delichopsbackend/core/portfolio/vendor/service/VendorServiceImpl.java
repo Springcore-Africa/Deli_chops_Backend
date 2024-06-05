@@ -3,8 +3,7 @@ package africa.springCore.delichopsbackend.core.portfolio.vendor.service;
 import africa.springCore.delichopsbackend.common.enums.ApprovalStatus;
 import africa.springCore.delichopsbackend.core.base.domain.dtos.response.BioDataResponseDto;
 import africa.springCore.delichopsbackend.core.base.domain.model.BioData;
-import africa.springCore.delichopsbackend.core.portfolio.customer.domain.model.Customer;
-import africa.springCore.delichopsbackend.core.portfolio.customer.domain.repository.CustomerRepository;
+import africa.springCore.delichopsbackend.core.base.domain.repository.BioDataRepository;
 import africa.springCore.delichopsbackend.core.portfolio.vendor.domain.dtos.requests.VendorCreationRequest;
 import africa.springCore.delichopsbackend.core.portfolio.vendor.domain.dtos.requests.VendorUpdateRequest;
 import africa.springCore.delichopsbackend.core.portfolio.vendor.domain.dtos.responses.VendorListingDto;
@@ -40,7 +39,7 @@ public class VendorServiceImpl implements VendorService {
 
     private final DeliMapper deliMapper;
     private final VendorRepository vendorRepository;
-    private final CustomerRepository customerRepository;
+    private final BioDataRepository bioDataRepository;
 
     @Override
     public VendorResponseDto findByEmail(String emailAddress) throws MapperException, UserNotFoundException {
@@ -86,7 +85,7 @@ public class VendorServiceImpl implements VendorService {
             throw new VendorCreationException("Validation failed, emailAddress cannot be null");
         }
         Optional<Vendor> foundVendorByEmail = vendorRepository.findByBioData_EmailAddress(emailAddress);
-        Optional<Customer> foundCustomerByEmail = customerRepository.findByBioData_EmailAddress(emailAddress);
+        Optional<BioData> foundCustomerByEmail = bioDataRepository.findByEmailAddress(emailAddress);
         if (foundVendorByEmail.isPresent()) {
             throw new VendorCreationException(
                     String.format(VENDOR_WITH_EMAIL_ALREADY_EXISTS, emailAddress)
@@ -104,7 +103,7 @@ public class VendorServiceImpl implements VendorService {
             throw new VendorCreationException("Validation failed, phone number cannot be null");
         }
         Optional<Vendor> foundVendorByNumber = vendorRepository.findByBioData_PhoneNumber(phoneNumber);
-        Optional<Customer> foundCustomerByNumber = customerRepository.findByBioData_PhoneNumber(phoneNumber);
+        Optional<BioData> foundCustomerByNumber = bioDataRepository.findByEmailAddress(phoneNumber);
         if (foundVendorByNumber.isPresent()) {
             throw new VendorCreationException(
                     String.format(VENDOR_WITH_PHONE_NUMBER_ALREADY_EXISTS, phoneNumber)
