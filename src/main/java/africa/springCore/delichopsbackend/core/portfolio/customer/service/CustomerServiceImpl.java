@@ -5,7 +5,7 @@ import africa.springCore.delichopsbackend.core.portfolio.customer.domain.dtos.re
 import africa.springCore.delichopsbackend.core.portfolio.customer.domain.dtos.requests.CustomerUpdateRequest;
 import africa.springCore.delichopsbackend.core.portfolio.customer.domain.dtos.responses.CustomerListingDto;
 import africa.springCore.delichopsbackend.core.portfolio.customer.domain.dtos.responses.CustomerResponseDto;
-import africa.springCore.delichopsbackend.core.portfolio.customer.exception.CustomerCreationException;
+import africa.springCore.delichopsbackend.core.portfolio.customer.exception.CustomerCreationFailedException;
 import africa.springCore.delichopsbackend.core.portfolio.customer.exception.CustomerUpdateException;
 import africa.springCore.delichopsbackend.core.base.domain.model.BioData;
 import africa.springCore.delichopsbackend.core.portfolio.customer.domain.model.Customer;
@@ -43,7 +43,7 @@ public class CustomerServiceImpl implements CustomerService {
     private final VendorRepository vendorRepository;
 
     @Override
-    public CustomerResponseDto createCustomer(CustomerCreationRequest customerCreationRequest) throws DeliChopsException, CustomerCreationException {
+    public CustomerResponseDto createCustomer(CustomerCreationRequest customerCreationRequest) throws DeliChopsException, CustomerCreationFailedException {
         validateCustomerCreationRequest(customerCreationRequest);
         BioData customerBioData = deliMapper.readValue(customerCreationRequest, BioData.class);
         customerBioData.setRoles(List.of(Role.CUSTOMER));
@@ -61,44 +61,44 @@ public class CustomerServiceImpl implements CustomerService {
         }
     }
 
-    private void validateCustomerCreationRequest(CustomerCreationRequest customerCreationRequest) throws CustomerCreationException {
+    private void validateCustomerCreationRequest(CustomerCreationRequest customerCreationRequest) throws CustomerCreationFailedException {
         validateEmailDuplicity(customerCreationRequest.getEmailAddress());
         if (customerCreationRequest.getPhoneNumber() != null && !StringUtils.isEmpty(customerCreationRequest.getPhoneNumber())) {
             validatePhoneNumberDuplicity(customerCreationRequest.getPhoneNumber());
         }
     }
 
-    private void validateEmailDuplicity(String emailAddress) throws CustomerCreationException {
+    private void validateEmailDuplicity(String emailAddress) throws CustomerCreationFailedException {
         if (emailAddress == null || StringUtils.isEmpty(emailAddress)) {
-            throw new CustomerCreationException("Validation failed, emailAddress cannot be null");
+            throw new CustomerCreationFailedException("Validation failed, emailAddress cannot be null");
         }
         Optional<Customer> foundCustomerByEmail = customerRepository.findByBioData_EmailAddress(emailAddress);
         Optional<Vendor> foundVendorByEmail = vendorRepository.findByBioData_EmailAddress(emailAddress);
         if (foundCustomerByEmail.isPresent()) {
-            throw new CustomerCreationException(
+            throw new CustomerCreationFailedException(
                     String.format(CUSTOMER_WITH_EMAIL_ALREADY_EXISTS, emailAddress)
             );
         }
         if (foundVendorByEmail.isPresent()) {
-            throw new CustomerCreationException(
+            throw new CustomerCreationFailedException(
                     String.format(USER_WITH_EMAIL_ALREADY_EXISTS, emailAddress)
             );
         }
     }
 
-    private void validatePhoneNumberDuplicity(String phoneNumber) throws CustomerCreationException {
+    private void validatePhoneNumberDuplicity(String phoneNumber) throws CustomerCreationFailedException {
         if (phoneNumber == null || StringUtils.isEmpty(phoneNumber)) {
-            throw new CustomerCreationException("Validation failed, phone number cannot be null");
+            throw new CustomerCreationFailedException("Validation failed, phone number cannot be null");
         }
         Optional<Customer> foundCustomerByNumber = customerRepository.findByBioData_PhoneNumber(phoneNumber);
         Optional<Vendor> foundVendorByNumber = vendorRepository.findByBioData_PhoneNumber(phoneNumber);
         if (foundCustomerByNumber.isPresent()) {
-            throw new CustomerCreationException(
+            throw new CustomerCreationFailedException(
                     String.format(CUSTOMER_WITH_PHONE_NUMBER_ALREADY_EXISTS, phoneNumber)
             );
         }
         if (foundVendorByNumber.isPresent()) {
-            throw new CustomerCreationException(
+            throw new CustomerCreationFailedException(
                     String.format(USER_WITH_PHONE_NUMBER_ALREADY_EXISTS, phoneNumber)
             );
         }
@@ -137,7 +137,7 @@ public class CustomerServiceImpl implements CustomerService {
             }
             return null;
         });
-        return getCustomerListingDto(pagedCustomers, pageable);
+        return getCustomerListingDto(pagedCustomers);
     }
 
     @Override
@@ -159,11 +159,11 @@ public class CustomerServiceImpl implements CustomerService {
             }
             return null;
         });
-        return getCustomerListingDto(pagedCustomers, pageable);
+        return getCustomerListingDto(pagedCustomers);
     }
 
     @Override
-    public CustomerResponseDto updateCustomer(Long id, CustomerUpdateRequest customerUpdateRequest) throws CustomerCreationException, UserNotFoundException, MapperException, CustomerUpdateException {
+    public CustomerResponseDto updateCustomer(Long id, CustomerUpdateRequest customerUpdateRequest) throws CustomerCreationFailedException, UserNotFoundException, MapperException, CustomerUpdateException {
         boolean allFieldsAreEmpty = true;
         findById(id);
         Customer existingCustomer = customerRepository.findById(id).get();
@@ -198,11 +198,11 @@ public class CustomerServiceImpl implements CustomerService {
         }
     }
 
-    private CustomerListingDto getCustomerListingDto(Page<CustomerResponseDto> pagedCustomers, Pageable pageable) {
+    private CustomerListingDto getCustomerListingDto(Page<CustomerResponseDto> pagedCustomers) {
         CustomerListingDto customerListingDto = new CustomerListingDto();
         customerListingDto.setCustomers(pagedCustomers.getContent());
-        customerListingDto.setPageNumber(pageable.getPageNumber());
-        customerListingDto.setPageSize(pageable.getPageSize());
+        customerListingDto.setPageNumber(pagedCustomers.getNumber());
+        customerListingDto.setPageSize(pagedCustomers.getSize());
         return customerListingDto;
     }
 }

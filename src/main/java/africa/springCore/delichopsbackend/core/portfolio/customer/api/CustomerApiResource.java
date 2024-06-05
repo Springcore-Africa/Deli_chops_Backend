@@ -5,7 +5,7 @@ import africa.springCore.delichopsbackend.core.portfolio.customer.domain.dtos.re
 import africa.springCore.delichopsbackend.core.portfolio.customer.domain.dtos.requests.CustomerUpdateRequest;
 import africa.springCore.delichopsbackend.core.portfolio.customer.domain.dtos.responses.CustomerListingDto;
 import africa.springCore.delichopsbackend.core.portfolio.customer.domain.dtos.responses.CustomerResponseDto;
-import africa.springCore.delichopsbackend.core.portfolio.customer.exception.CustomerCreationException;
+import africa.springCore.delichopsbackend.core.portfolio.customer.exception.CustomerCreationFailedException;
 import africa.springCore.delichopsbackend.core.portfolio.customer.exception.CustomerUpdateException;
 import africa.springCore.delichopsbackend.infrastructure.exception.DeliChopsException;
 import africa.springCore.delichopsbackend.infrastructure.exception.MapperException;
@@ -32,7 +32,7 @@ public class CustomerApiResource {
     @Operation(summary = "Create a New Customer")
     @PostMapping("")
     public ResponseEntity<CustomerResponseDto> createCustomer(
-            @Valid @RequestBody CustomerCreationRequest customerCreationRequest) throws DeliChopsException, CustomerCreationException {
+            @Valid @RequestBody CustomerCreationRequest customerCreationRequest) throws DeliChopsException, CustomerCreationFailedException {
 
         CustomerResponseDto postClientsResponse =
                 customerService.createCustomer(customerCreationRequest);
@@ -84,7 +84,7 @@ public class CustomerApiResource {
     public ResponseEntity<CustomerResponseDto> updateCustomer(
             @Valid @PathVariable(name = "id") Long id,
             @Valid @RequestBody CustomerUpdateRequest customerUpdateRequest
-    ) throws DeliChopsException, CustomerCreationException, CustomerUpdateException {
+    ) throws DeliChopsException, CustomerCreationFailedException, CustomerUpdateException {
         {
             CustomerResponseDto customer =
                     customerService.updateCustomer(id, customerUpdateRequest);

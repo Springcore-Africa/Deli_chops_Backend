@@ -27,6 +27,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Builder
 @Entity
+@ToString
 public class BioData implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
