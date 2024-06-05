@@ -63,7 +63,7 @@ public class AdminApiResource {
 
 
     @Operation(summary = "Find by email")
-    @GetMapping("/findById/{id}")
+    @GetMapping("/findByEmail/{id}")
     public ResponseEntity<AdminResponseDto> findByEmail(
             @PathVariable(name = "email") String email
             ) throws DeliChopsException, AdminNotFoundException {
