@@ -9,4 +9,7 @@ public interface BioDataService {
     BioDataResponseDto findByEmail(String email) throws UserNotFoundException, MapperException;
 
     void validateDuplicateUserExistence(String emailAddress) throws UserAlreadyExistsException;
+
+    BioDataResponseDto findByPhoneNumber(String phoneNumber) throws UserNotFoundException, MapperException;
+
 }

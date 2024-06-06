@@ -2,11 +2,16 @@ package africa.springCore.delichopsbackend.core.portfolio.admin.api;
 
 import africa.springCore.delichopsbackend.common.data.ApiResponse;
 import africa.springCore.delichopsbackend.core.portfolio.admin.domain.dtos.requests.AdminInvitationRequest;
+import africa.springCore.delichopsbackend.core.portfolio.admin.domain.dtos.requests.AdminUpdateRequest;
 import africa.springCore.delichopsbackend.core.portfolio.admin.domain.dtos.responses.AdminListingDto;
 import africa.springCore.delichopsbackend.core.portfolio.admin.domain.dtos.responses.AdminResponseDto;
 import africa.springCore.delichopsbackend.core.portfolio.admin.exception.AdminNotFoundException;
+import africa.springCore.delichopsbackend.core.portfolio.admin.exception.AdminUpdateFailedException;
 import africa.springCore.delichopsbackend.core.portfolio.admin.service.AdminService;
+import africa.springCore.delichopsbackend.core.portfolio.customer.exception.CustomerCreationFailedException;
 import africa.springCore.delichopsbackend.infrastructure.exception.DeliChopsException;
+import africa.springCore.delichopsbackend.infrastructure.exception.MapperException;
+import africa.springCore.delichopsbackend.infrastructure.exception.UserNotFoundException;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -48,7 +53,7 @@ public class AdminApiResource {
     @GetMapping("")
     public ResponseEntity<AdminListingDto> findAll(
             @PageableDefault(size = 10, page = 0, sort = "id", direction = Sort.Direction.ASC) Pageable pageable
-            ) throws DeliChopsException {
+    ) throws DeliChopsException {
         return ResponseEntity.ok().body(adminService.findAll(pageable));
     }
 
@@ -57,7 +62,7 @@ public class AdminApiResource {
     @GetMapping("/findById/{id}")
     public ResponseEntity<AdminResponseDto> findById(
             @PathVariable(name = "id") Long id
-            ) throws DeliChopsException, AdminNotFoundException {
+    ) throws DeliChopsException, AdminNotFoundException {
         return ResponseEntity.ok().body(adminService.findById(id));
     }
 
@@ -66,8 +71,18 @@ public class AdminApiResource {
     @GetMapping("/findByEmail/{id}")
     public ResponseEntity<AdminResponseDto> findByEmail(
             @PathVariable(name = "email") String email
-            ) throws DeliChopsException, AdminNotFoundException {
+    ) throws DeliChopsException, AdminNotFoundException {
         return ResponseEntity.ok().body(adminService.findByEmail(email));
+    }
+
+
+    @Operation(summary = "Update an admin")
+    @PatchMapping("/{id}")
+    public ResponseEntity<AdminResponseDto> updateAdmin(
+            @PathVariable(name = "id") Long id,
+            @RequestBody AdminUpdateRequest adminUpdateRequest
+    ) throws UserNotFoundException, AdminUpdateFailedException, CustomerCreationFailedException, AdminNotFoundException, MapperException {
+        return ResponseEntity.ok().body(adminService.updateAdmin(id, adminUpdateRequest));
     }
 
 

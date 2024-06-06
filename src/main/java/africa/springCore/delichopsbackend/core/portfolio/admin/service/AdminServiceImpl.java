@@ -5,14 +5,20 @@ import africa.springCore.delichopsbackend.common.enums.Role;
 import africa.springCore.delichopsbackend.common.utils.JwtUtility;
 import africa.springCore.delichopsbackend.core.base.domain.dtos.response.BioDataResponseDto;
 import africa.springCore.delichopsbackend.core.base.domain.model.BioData;
+import africa.springCore.delichopsbackend.core.base.domain.repository.BioDataRepository;
 import africa.springCore.delichopsbackend.core.base.service.BioDataService;
 import africa.springCore.delichopsbackend.core.portfolio.admin.domain.dtos.requests.AdminInvitationRequest;
+import africa.springCore.delichopsbackend.core.portfolio.admin.domain.dtos.requests.AdminUpdateRequest;
 import africa.springCore.delichopsbackend.core.portfolio.admin.domain.dtos.responses.AdminListingDto;
 import africa.springCore.delichopsbackend.core.portfolio.admin.domain.dtos.responses.AdminResponseDto;
 import africa.springCore.delichopsbackend.core.portfolio.admin.domain.model.Admin;
 import africa.springCore.delichopsbackend.core.portfolio.admin.domain.repository.AdminRepository;
 import africa.springCore.delichopsbackend.core.portfolio.admin.exception.AdminNotFoundException;
-import africa.springCore.delichopsbackend.core.portfolio.customer.domain.dtos.responses.CustomerListingDto;
+import africa.springCore.delichopsbackend.core.portfolio.admin.exception.AdminUpdateFailedException;
+import africa.springCore.delichopsbackend.core.portfolio.customer.domain.model.Customer;
+import africa.springCore.delichopsbackend.core.portfolio.customer.exception.CustomerCreationFailedException;
+import africa.springCore.delichopsbackend.core.portfolio.customer.exception.CustomerUpdateFailedException;
+import africa.springCore.delichopsbackend.core.portfolio.vendor.domain.model.Vendor;
 import africa.springCore.delichopsbackend.infrastructure.configuration.ApplicationProperty;
 import africa.springCore.delichopsbackend.infrastructure.exception.*;
 import africa.springCore.delichopsbackend.common.utils.DeliMapper;
@@ -22,6 +28,7 @@ import africa.springCore.delichopsbackend.infrastructure.notification.mailServic
 import com.auth0.jwt.interfaces.Claim;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -30,6 +37,7 @@ import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static africa.springCore.delichopsbackend.common.Message.*;
 import static africa.springCore.delichopsbackend.common.utils.AppUtils.*;
@@ -46,6 +54,7 @@ public class AdminServiceImpl implements AdminService {
     private final ApplicationProperty applicationProperty;
     private final MailService mailService;
     private final BioDataService bioDataService;
+    private final BioDataRepository bioDataRepository;
     private final PasswordEncoder passwordEncoder;
 
 
@@ -125,6 +134,80 @@ public class AdminServiceImpl implements AdminService {
                 )
         );
     }
+
+    @Override
+    public AdminResponseDto updateAdmin(Long id, AdminUpdateRequest adminUpdateRequest) throws AdminNotFoundException, MapperException, AdminUpdateFailedException, UserNotFoundException, CustomerCreationFailedException {
+        boolean allFieldsAreEmpty = true;
+        findById(id);
+        Admin existingCustomer = adminRepository.findById(id).get();
+        BioData existingCustomerBioData = adminRepository.findById(id).get().getBioData();
+        if (adminUpdateRequest.getEmailAddress() != null && !StringUtils.isEmpty(adminUpdateRequest.getEmailAddress())) {
+            allFieldsAreEmpty = false;
+            validateEmailDuplicity(adminUpdateRequest.getEmailAddress());
+            existingCustomerBioData.setEmailAddress(adminUpdateRequest.getEmailAddress());
+        }
+        if (adminUpdateRequest.getPhoneNumber() != null && !StringUtils.isEmpty(adminUpdateRequest.getPhoneNumber())) {
+            allFieldsAreEmpty = false;
+            validatePhoneNumberDuplicity(adminUpdateRequest.getPhoneNumber());
+            existingCustomerBioData.setPhoneNumber(adminUpdateRequest.getPhoneNumber());
+        }
+        if (adminUpdateRequest.getFirstName() != null && !StringUtils.isEmpty(adminUpdateRequest.getFirstName())) {
+            allFieldsAreEmpty = false;
+            existingCustomerBioData.setFirstName(adminUpdateRequest.getFirstName());
+        }
+        if (adminUpdateRequest.getLastName() != null && !StringUtils.isEmpty(adminUpdateRequest.getLastName())) {
+            allFieldsAreEmpty = false;
+            existingCustomerBioData.setLastName(adminUpdateRequest.getLastName());
+        }
+        if (adminUpdateRequest.getProfilePicture() != null && !StringUtils.isEmpty(adminUpdateRequest.getProfilePicture())) {
+            allFieldsAreEmpty = false;
+            existingCustomerBioData.setProfilePicture(adminUpdateRequest.getProfilePicture());
+        }
+
+        if (allFieldsAreEmpty) throw new AdminUpdateFailedException("No field specified for update");
+        else {
+            existingCustomer.setBioData(existingCustomerBioData);
+            return getAdminResponseDto(adminRepository.save(existingCustomer));
+        }
+    }
+
+
+    private void validateEmailDuplicity(String emailAddress) throws CustomerCreationFailedException, UserNotFoundException, MapperException {
+        if (emailAddress == null || StringUtils.isEmpty(emailAddress)) {
+            throw new CustomerCreationFailedException("Validation failed, emailAddress cannot be null");
+        }
+        Optional<Admin> foundAdmin = adminRepository.findByBioData_EmailAddress(emailAddress);
+        Optional<BioData> foundUser = bioDataRepository.findByEmailAddress(emailAddress);
+        if (foundAdmin.isPresent()) {
+            throw new CustomerCreationFailedException(
+                    String.format(ADMIN_WITH_EMAIL_ALREADY_EXISTS, emailAddress)
+            );
+        }
+        if (foundUser.isPresent()) {
+            throw new CustomerCreationFailedException(
+                    String.format(USER_WITH_EMAIL_ALREADY_EXISTS, emailAddress)
+            );
+        }
+    }
+
+    private void validatePhoneNumberDuplicity(String phoneNumber) throws CustomerCreationFailedException, UserNotFoundException, MapperException {
+        if (phoneNumber == null || StringUtils.isEmpty(phoneNumber)) {
+            throw new CustomerCreationFailedException("Validation failed, emailAddress cannot be null");
+        }
+        Optional<Admin> foundAdmin = adminRepository.findByBioData_PhoneNumber(phoneNumber);
+        Optional<BioData> foundUser = bioDataRepository.findByPhoneNumber(phoneNumber);
+        if (foundAdmin.isPresent()) {
+            throw new CustomerCreationFailedException(
+                    String.format(ADMIN_WITH_PHONE_NUMBER_ALREADY_EXISTS, phoneNumber)
+            );
+        }
+        if (foundUser.isPresent()) {
+            throw new CustomerCreationFailedException(
+                    String.format(USER_WITH_PHONE_NUMBER_ALREADY_EXISTS, phoneNumber)
+            );
+        }
+    }
+
 
     private AdminListingDto getAdminListingDto(Page<Admin> admins) {
         Page<AdminResponseDto> responseDtoPage = admins.map(

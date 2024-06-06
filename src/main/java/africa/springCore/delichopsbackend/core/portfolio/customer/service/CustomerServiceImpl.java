@@ -6,7 +6,7 @@ import africa.springCore.delichopsbackend.core.portfolio.customer.domain.dtos.re
 import africa.springCore.delichopsbackend.core.portfolio.customer.domain.dtos.responses.CustomerListingDto;
 import africa.springCore.delichopsbackend.core.portfolio.customer.domain.dtos.responses.CustomerResponseDto;
 import africa.springCore.delichopsbackend.core.portfolio.customer.exception.CustomerCreationFailedException;
-import africa.springCore.delichopsbackend.core.portfolio.customer.exception.CustomerUpdateException;
+import africa.springCore.delichopsbackend.core.portfolio.customer.exception.CustomerUpdateFailedException;
 import africa.springCore.delichopsbackend.core.base.domain.model.BioData;
 import africa.springCore.delichopsbackend.core.portfolio.customer.domain.model.Customer;
 import africa.springCore.delichopsbackend.core.portfolio.customer.domain.repository.CustomerRepository;
@@ -149,7 +149,7 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public CustomerResponseDto updateCustomer(Long id, CustomerUpdateRequest customerUpdateRequest) throws CustomerCreationFailedException, UserNotFoundException, MapperException, CustomerUpdateException {
+    public CustomerResponseDto updateCustomer(Long id, CustomerUpdateRequest customerUpdateRequest) throws CustomerCreationFailedException, UserNotFoundException, MapperException, CustomerUpdateFailedException {
         boolean allFieldsAreEmpty = true;
         findById(id);
         Customer existingCustomer = customerRepository.findById(id).get();
@@ -177,7 +177,7 @@ public class CustomerServiceImpl implements CustomerService {
             existingCustomerBioData.setProfilePicture(customerUpdateRequest.getProfilePicture());
         }
 
-        if (allFieldsAreEmpty) throw new CustomerUpdateException("No field specified for update");
+        if (allFieldsAreEmpty) throw new CustomerUpdateFailedException("No field specified for update");
         else {
             existingCustomer.setBioData(existingCustomerBioData);
             return getCustomerResponseDto(customerRepository.save(existingCustomer));

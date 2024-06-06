@@ -2,9 +2,12 @@ package africa.springCore.delichopsbackend.core.portfolio.admin.service;
 
 import africa.springCore.delichopsbackend.common.data.ApiResponse;
 import africa.springCore.delichopsbackend.core.portfolio.admin.domain.dtos.requests.AdminInvitationRequest;
+import africa.springCore.delichopsbackend.core.portfolio.admin.domain.dtos.requests.AdminUpdateRequest;
 import africa.springCore.delichopsbackend.core.portfolio.admin.domain.dtos.responses.AdminListingDto;
 import africa.springCore.delichopsbackend.core.portfolio.admin.domain.dtos.responses.AdminResponseDto;
 import africa.springCore.delichopsbackend.core.portfolio.admin.exception.AdminNotFoundException;
+import africa.springCore.delichopsbackend.core.portfolio.admin.exception.AdminUpdateFailedException;
+import africa.springCore.delichopsbackend.core.portfolio.customer.exception.CustomerCreationFailedException;
 import africa.springCore.delichopsbackend.infrastructure.exception.*;
 import org.springframework.data.domain.Pageable;
 
@@ -20,4 +23,6 @@ public interface AdminService {
     AdminListingDto findAll(Pageable pageable);
 
     AdminResponseDto findById(Long id) throws AdminNotFoundException, MapperException;
+
+    AdminResponseDto updateAdmin(Long id, AdminUpdateRequest adminUpdateRequest) throws AdminNotFoundException, MapperException, AdminUpdateFailedException, UserNotFoundException, CustomerCreationFailedException;
 }
