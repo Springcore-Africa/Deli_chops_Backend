@@ -27,8 +27,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import static africa.springCore.delichopsbackend.common.enums.Role.ORDINARY_ADMIN;
-import static africa.springCore.delichopsbackend.common.enums.Role.SUPER_ADMIN;
+import static africa.springCore.delichopsbackend.common.enums.Role.*;
 import static africa.springCore.delichopsbackend.common.utils.SecurityUtils.*;
 
 @Configuration
@@ -70,6 +69,7 @@ public class SecurityConfig {
                         .permitAll()
                         .requestMatchers(HttpMethod.GET, getGetUrlWhiteList())
                         .permitAll()
+                        .requestMatchers(HttpMethod.POST, getProductsAuthUrl()).hasAnyAuthority(VENDOR.name())
                         .requestMatchers(HttpMethod.POST, getVendorApprovalUrl()).hasAnyAuthority(ORDINARY_ADMIN.name(), SUPER_ADMIN.name())
                         .anyRequest()
                         .authenticated())

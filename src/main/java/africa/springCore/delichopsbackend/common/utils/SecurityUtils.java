@@ -42,4 +42,10 @@ public class SecurityUtils {
         };
     }
 
+    public static String[] getProductsAuthUrl() {
+        return new String[]{
+                "/api/v1/vendors/*/products"
+        };
+    }
+
 }
