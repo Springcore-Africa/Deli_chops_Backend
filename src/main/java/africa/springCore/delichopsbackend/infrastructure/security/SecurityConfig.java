@@ -70,7 +70,7 @@ public class SecurityConfig {
                         .permitAll()
                         .requestMatchers(HttpMethod.GET, getGetUrlWhiteList())
                         .permitAll()
-                        .requestMatchers(HttpMethod.POST, getVendorApprovalUrl()).hasAnyRole(ORDINARY_ADMIN.name(), SUPER_ADMIN.name())
+                        .requestMatchers(HttpMethod.POST, getVendorApprovalUrl()).hasAnyAuthority(ORDINARY_ADMIN.name(), SUPER_ADMIN.name())
                         .anyRequest()
                         .authenticated())
                 .build();

@@ -62,7 +62,7 @@ public class JwtUtility {
     public String generateEncryptedLink(Map<String, Object> requestAsMap) {
         return JWT.create()
                 .withIssuedAt(now())
-                .withExpiresAt(now().plusSeconds(172800L))
+                .withExpiresAt(now().plusSeconds(900L))
                 .withClaim(AppUtils.ADMIN, requestAsMap)
                 .sign(Algorithm.HMAC512(applicationProperty.getJwtSigningSecret().getBytes()));
     }

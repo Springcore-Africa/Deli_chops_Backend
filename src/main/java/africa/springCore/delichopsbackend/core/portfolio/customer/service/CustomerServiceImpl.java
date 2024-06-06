@@ -6,7 +6,7 @@ import africa.springCore.delichopsbackend.core.portfolio.customer.domain.dtos.re
 import africa.springCore.delichopsbackend.core.portfolio.customer.domain.dtos.responses.CustomerListingDto;
 import africa.springCore.delichopsbackend.core.portfolio.customer.domain.dtos.responses.CustomerResponseDto;
 import africa.springCore.delichopsbackend.core.portfolio.customer.exception.CustomerCreationFailedException;
-import africa.springCore.delichopsbackend.core.portfolio.customer.exception.CustomerUpdateException;
+import africa.springCore.delichopsbackend.core.portfolio.customer.exception.CustomerUpdateFailedException;
 import africa.springCore.delichopsbackend.core.base.domain.model.BioData;
 import africa.springCore.delichopsbackend.core.portfolio.customer.domain.model.Customer;
 import africa.springCore.delichopsbackend.core.portfolio.customer.domain.repository.CustomerRepository;
@@ -129,14 +129,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public CustomerListingDto retrieveAll(Pageable pageable) {
-        Page<CustomerResponseDto> pagedCustomers = customerRepository.findAll(pageable).map((customer) -> {
-            try {
-                return deliMapper.readValue(customer, CustomerResponseDto.class);
-            } catch (MapperException e) {
-                e.printStackTrace();
-            }
-            return null;
-        });
+        Page<Customer> pagedCustomers = customerRepository.findAll(pageable);
         return getCustomerListingDto(pagedCustomers);
     }
 
@@ -151,19 +144,12 @@ public class CustomerServiceImpl implements CustomerService {
         else if (searchParam.equals(PHONE_NUMBER)) bioData.setPhoneNumber(value);
         criteria.setBioData(bioData);
         Example<Customer> example = Example.of(criteria, matcher);
-        Page<CustomerResponseDto> pagedCustomers = customerRepository.findAll(example, pageable).map((customer) -> {
-            try {
-                return deliMapper.readValue(customer, CustomerResponseDto.class);
-            } catch (MapperException e) {
-                e.printStackTrace();
-            }
-            return null;
-        });
+        Page<Customer> pagedCustomers = customerRepository.findAll(example, pageable);
         return getCustomerListingDto(pagedCustomers);
     }
 
     @Override
-    public CustomerResponseDto updateCustomer(Long id, CustomerUpdateRequest customerUpdateRequest) throws CustomerCreationFailedException, UserNotFoundException, MapperException, CustomerUpdateException {
+    public CustomerResponseDto updateCustomer(Long id, CustomerUpdateRequest customerUpdateRequest) throws CustomerCreationFailedException, UserNotFoundException, MapperException, CustomerUpdateFailedException {
         boolean allFieldsAreEmpty = true;
         findById(id);
         Customer existingCustomer = customerRepository.findById(id).get();
@@ -191,18 +177,26 @@ public class CustomerServiceImpl implements CustomerService {
             existingCustomerBioData.setProfilePicture(customerUpdateRequest.getProfilePicture());
         }
 
-        if (allFieldsAreEmpty) throw new CustomerUpdateException("No field specified for update");
+        if (allFieldsAreEmpty) throw new CustomerUpdateFailedException("No field specified for update");
         else {
             existingCustomer.setBioData(existingCustomerBioData);
             return getCustomerResponseDto(customerRepository.save(existingCustomer));
         }
     }
 
-    private CustomerListingDto getCustomerListingDto(Page<CustomerResponseDto> pagedCustomers) {
+    private CustomerListingDto getCustomerListingDto(Page<Customer> pagedCustomers) {
+        Page<CustomerResponseDto> customerResponseDtoPage = pagedCustomers.map((customer) -> {
+            try {
+                return deliMapper.readValue(customer, CustomerResponseDto.class);
+            } catch (MapperException e) {
+                e.printStackTrace();
+            }
+            return null;
+        });
         CustomerListingDto customerListingDto = new CustomerListingDto();
-        customerListingDto.setCustomers(pagedCustomers.getContent());
-        customerListingDto.setPageNumber(pagedCustomers.getNumber());
-        customerListingDto.setPageSize(pagedCustomers.getSize());
+        customerListingDto.setCustomers(customerResponseDtoPage.getContent());
+        customerListingDto.setPageNumber(customerResponseDtoPage.getNumber());
+        customerListingDto.setPageSize(customerResponseDtoPage.getSize());
         return customerListingDto;
     }
 }

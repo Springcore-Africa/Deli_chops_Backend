@@ -1,9 +1,13 @@
 package africa.springCore.delichopsbackend.common;
 
+import africa.springCore.delichopsbackend.common.data.ApiResponse;
+import org.springframework.http.HttpStatus;
+
 public class Message {
 	
 	public static final String CREATED = "Account has been created successfully";
 	public static final String MAIL_HAS_BEEN_SENT_SUCCESSFULLY = "Mail has been sent successfully";
+	public static final String TOKEN_HAS_BEEN_VERIFIED_SUCCESSFULLY = "Token has been verified successfully";
 	public static final String SENT = "Mail has been sent successfully";
 	public static final String FAILED_TO_GET_ACTIVATION_LINK="Failed to get activation link";
 	public static final String EMAIL_ALREADY_EXIST = "Email has already been used";
@@ -14,8 +18,13 @@ public class Message {
 	public static final String USER_NOT_FOUND = "User not found";
 	public static final String INVALID_TOKEN = "Invalid token";
 	public static final String USER_WITH_EMAIL_NOT_FOUND = "User with email %s not found";
+	public static final String USER_WITH_PHONE_NUMBER_NOT_FOUND = "User with phone number %s not found";
 	public static final String USER_WITH_EMAIL_ALREADY_EXISTS = "User with email %s already exists";
+	public static final String USER_WITH_PHONE_NUMBER_ALREADY_EXISTS = "User with phone number %s already exists";
+	public static final String ADMIN_WITH_EMAIL_ALREADY_EXISTS = "Admin with email %s already exists";
+	public static final String ADMIN_WITH_PHONE_NUMBER_ALREADY_EXISTS = "Admin with phone number %s already exists";
 	public static final String USER_WITH_ID_NOT_FOUND = "User with id %s not found";
+	public static final String ADMIN_WITH_ID_NOT_FOUND = "Admin with id %s not found";
 	public static final String MINISTER_WITH_ID_NOT_FOUND = "Minister with id %s not found";
 	public static final String DEPARTMENT_WITH_ID_NOT_FOUND = "Department with id %s not found";
 	public static final String PRODUCT_CATEGORY_WITH_ID_NOT_FOUND = "Product category with id %s not found";
@@ -25,7 +34,6 @@ public class Message {
 	public static final String USER_ADDRESS_WITH_ID_NOT_FOUND= "%s address with id %s not found";
 	public static final String VENDOR_WITH_EMAIL_ALREADY_EXISTS = "Vendor with email %s already exists";
 	public static final String CUSTOMER_WITH_PHONE_NUMBER_ALREADY_EXISTS = "Customer with phone number %s already exists";
-	public static final String USER_WITH_PHONE_NUMBER_ALREADY_EXISTS = "User with phone number %s already exists";
 	public static final String VENDOR_WITH_PHONE_NUMBER_ALREADY_EXISTS = "Vendor with phone number %s already exists";
 	public static final String ACC_VERIFY_FAILURE = "account verification failed";
 	public static final String PASSWORDS_DO_NOT_MATCH = "Passwords do not match";
@@ -40,4 +48,13 @@ public class Message {
 	public static final String EVENT_UPDATED_SUCCESSFULLY ="Event has been updated successfully" ;
 	public static final String EVENT_DELETED_SUCCESSFULLY = "Event deleted successfully";
 
+
+
+	public static ApiResponse apiResponse(String message){
+		return ApiResponse.builder()
+				.message (message)
+				.success (true)
+				.statusCode (HttpStatus.OK.value ())
+				.build();
+	}
 }

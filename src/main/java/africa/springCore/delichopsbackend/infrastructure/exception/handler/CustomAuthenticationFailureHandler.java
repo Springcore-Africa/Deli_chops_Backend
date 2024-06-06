@@ -27,8 +27,8 @@ public class CustomAuthenticationFailureHandler implements AuthenticationFailure
             HttpServletResponse response,
             AuthenticationException exception) throws IOException, ServletException {
         Map<String, String> errorResponse = new HashMap<>();
-        System.err.println("Incorrect username or password");
-        errorResponse.put("error", exception.getMessage());
+        System.err.println("Authentication Error");
+        errorResponse.put("error", "Authentication required. This user does not have permission to access the requested endpoint");
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.getWriter().write(objectMapper.writeValueAsString(errorResponse));
     }

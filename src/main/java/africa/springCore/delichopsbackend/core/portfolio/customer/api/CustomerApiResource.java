@@ -6,7 +6,7 @@ import africa.springCore.delichopsbackend.core.portfolio.customer.domain.dtos.re
 import africa.springCore.delichopsbackend.core.portfolio.customer.domain.dtos.responses.CustomerListingDto;
 import africa.springCore.delichopsbackend.core.portfolio.customer.domain.dtos.responses.CustomerResponseDto;
 import africa.springCore.delichopsbackend.core.portfolio.customer.exception.CustomerCreationFailedException;
-import africa.springCore.delichopsbackend.core.portfolio.customer.exception.CustomerUpdateException;
+import africa.springCore.delichopsbackend.core.portfolio.customer.exception.CustomerUpdateFailedException;
 import africa.springCore.delichopsbackend.infrastructure.exception.DeliChopsException;
 import africa.springCore.delichopsbackend.infrastructure.exception.MapperException;
 import africa.springCore.delichopsbackend.infrastructure.exception.UserNotFoundException;
@@ -84,7 +84,7 @@ public class CustomerApiResource {
     public ResponseEntity<CustomerResponseDto> updateCustomer(
             @Valid @PathVariable(name = "id") Long id,
             @Valid @RequestBody CustomerUpdateRequest customerUpdateRequest
-    ) throws DeliChopsException, CustomerCreationFailedException, CustomerUpdateException {
+    ) throws DeliChopsException, CustomerCreationFailedException, CustomerUpdateFailedException {
         {
             CustomerResponseDto customer =
                     customerService.updateCustomer(id, customerUpdateRequest);

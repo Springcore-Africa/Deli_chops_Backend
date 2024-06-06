@@ -22,4 +22,8 @@ public class AppUtils {
     public static final String ONBOARDING_MAIL_SUBJECT = "Email Verification";
     public static final String PASSWORD_RESET_LINK = "Password Reset Link";
     public static final String EMPTY_SPACE_VALUE = "";
+    public static final String DELI_CHOPS_ADMIN_INVITATION = "DELI-CHOPS ADMIN INVITATION";
+    public static final String ADMIN_INVITATION_HTML_TEMPLATE_LOCATION = "/adminInvitationTemplate.txt";
+    public static final String SUCCESSFUL_REGISTRATION_HTML_TEMPLATE_LOCATION = "/successfulRegistrationTemplate.txt";
+
 }

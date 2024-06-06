@@ -4,6 +4,7 @@ import africa.springCore.delichopsbackend.core.portfolio.vendor.domain.dtos.requ
 import africa.springCore.delichopsbackend.core.portfolio.vendor.domain.dtos.requests.VendorUpdateRequest;
 import africa.springCore.delichopsbackend.core.portfolio.vendor.domain.dtos.responses.VendorListingDto;
 import africa.springCore.delichopsbackend.core.portfolio.vendor.domain.dtos.responses.VendorResponseDto;
+import africa.springCore.delichopsbackend.core.portfolio.vendor.exception.VendorApprovalFailedException;
 import africa.springCore.delichopsbackend.core.portfolio.vendor.exception.VendorCreationException;
 import africa.springCore.delichopsbackend.core.portfolio.vendor.exception.VendorUpdateException;
 import africa.springCore.delichopsbackend.infrastructure.exception.DeliChopsException;
@@ -23,5 +24,5 @@ public interface VendorService {
 
     VendorResponseDto updateVendor(Long id, VendorUpdateRequest VendorUpdateRequest) throws VendorCreationException, UserNotFoundException, MapperException, VendorUpdateException;
 
-    VendorResponseDto approveVendor(Long id, String actionName) throws UserNotFoundException, MapperException;
+    VendorResponseDto approveVendor(Long id, String actionName) throws UserNotFoundException, MapperException, VendorApprovalFailedException;
 }
