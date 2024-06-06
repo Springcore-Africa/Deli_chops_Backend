@@ -85,8 +85,8 @@ public class SecurityConfig {
             public void addCorsMappings(@NonNull CorsRegistry registry) {
                 registry
                         .addMapping("/**")
-                        .allowedOriginPatterns("*") // Changed from allowedOrigins to allowedOriginPatterns
-                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                        .allowedOriginPatterns("*")
+                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH")
                         .allowedHeaders("*")
                         .exposedHeaders(
                                 "Access-Control-Allow-Origin",
