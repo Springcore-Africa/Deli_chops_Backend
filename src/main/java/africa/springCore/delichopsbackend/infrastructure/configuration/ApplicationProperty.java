@@ -6,6 +6,8 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.math.BigDecimal;
+
 @ConfigurationProperties("deli.chops")
 @Configuration
 @Data
@@ -13,5 +15,6 @@ public class ApplicationProperty {
 
     private String jwtSigningSecret;
     private String adminInvitationClientUrl;
+    private BigDecimal priceInterest;
 
 }

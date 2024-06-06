@@ -15,6 +15,7 @@ import africa.springCore.delichopsbackend.core.portfolio.product.exception.Produ
 import africa.springCore.delichopsbackend.core.portfolio.product.exception.ProductNotFoundException;
 import africa.springCore.delichopsbackend.core.portfolio.vendor.domain.dtos.responses.VendorResponseDto;
 import africa.springCore.delichopsbackend.core.portfolio.vendor.service.VendorService;
+import africa.springCore.delichopsbackend.infrastructure.configuration.ApplicationProperty;
 import africa.springCore.delichopsbackend.infrastructure.exception.MapperException;
 import africa.springCore.delichopsbackend.infrastructure.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 import static africa.springCore.delichopsbackend.common.Message.*;
 import static africa.springCore.delichopsbackend.common.utils.AppUtils.*;
@@ -37,6 +39,7 @@ public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
     private final ProductCategoryService productCategoryService;
     private final VendorService vendorService;
+    private final ApplicationProperty applicationProperty;
 
 
     @Override
@@ -56,9 +59,17 @@ public class ProductServiceImpl implements ProductService {
             throw new ProductCreationFailedException("Price cannot be less than ten");
         }
         Product product = deliMapper.readValue(productCreationRequest, Product.class);
+        product.setPrice(getSystemPrice(productCreationRequest.getPrice()));
         product.setCategoryId(productCreationRequest.getCategoryId());
         product.setVendorId(vendorId);
         return getProductResponseDto(productRepository.save(product));
+    }
+
+    private BigDecimal getSystemPrice(BigDecimal price) {
+        BigDecimal interestInPercentage = applicationProperty.getPriceInterest();
+        BigDecimal interestInDecimal = interestInPercentage.divide(BigDecimal.valueOf(100), 3, RoundingMode.HALF_UP);
+        BigDecimal priceInterest = price.multiply(interestInDecimal).setScale(3, RoundingMode.HALF_UP);
+        return price.add(priceInterest).setScale(0, RoundingMode.HALF_UP);
     }
 
     private ProductCategoryResponseDto findProductCategoryById(Long categoryId) throws ProductCategoryNotFoundException, MapperException {
@@ -84,9 +95,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductResponseDto getProductById(Long id) throws ProductNotFoundException, MapperException, ProductCategoryNotFoundException {
-        return getProductResponseDto(productRepository.findById(id).orElseThrow(
-                () -> new ProductNotFoundException(String.format(PRODUCT_WITH_ID_NOT_FOUND, id))
-        ));
+        return getProductResponseDto(productRepository.findById(id).orElseThrow(() -> new ProductNotFoundException(String.format(PRODUCT_WITH_ID_NOT_FOUND, id))));
     }
 
     @Override
@@ -97,9 +106,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductListingDto searchProducts(String searchParam, String value, Pageable pageable) throws ProductCategoryNotFoundException, MapperException {
-        ExampleMatcher matcher = ExampleMatcher.matchingAll()
-                .withIgnoreCase()
-                .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING);
+        ExampleMatcher matcher = ExampleMatcher.matchingAll().withIgnoreCase().withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING);
         Product criteria = new Product();
         if (searchParam.equals(PRODUCT_NAME)) {
             criteria.setName(value);
@@ -115,16 +122,14 @@ public class ProductServiceImpl implements ProductService {
     }
 
     private ProductListingDto getProductListingDto(Page<Product> pagedProducts) {
-        Page<ProductResponseDto> products = pagedProducts.map(
-                product -> {
-                    try {
-                        return getProductResponseDto(product);
-                    } catch (MapperException | ProductCategoryNotFoundException e) {
-                        e.printStackTrace();
-                    }
-                    return null;
-                }
-        );
+        Page<ProductResponseDto> products = pagedProducts.map(product -> {
+            try {
+                return getProductResponseDto(product);
+            } catch (MapperException | ProductCategoryNotFoundException e) {
+                e.printStackTrace();
+            }
+            return null;
+        });
         ProductListingDto productListingDto = new ProductListingDto();
         productListingDto.setProducts(products.getContent());
         productListingDto.setPageNumber(products.getNumber());
