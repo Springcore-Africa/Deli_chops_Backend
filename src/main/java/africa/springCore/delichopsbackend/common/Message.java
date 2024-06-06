@@ -3,6 +3,8 @@ package africa.springCore.delichopsbackend.common;
 import africa.springCore.delichopsbackend.common.data.ApiResponse;
 import org.springframework.http.HttpStatus;
 
+import java.math.BigDecimal;
+
 public class Message {
 	
 	public static final String CREATED = "Account has been created successfully";
@@ -24,6 +26,7 @@ public class Message {
 	public static final String ADMIN_WITH_EMAIL_ALREADY_EXISTS = "Admin with email %s already exists";
 	public static final String ADMIN_WITH_PHONE_NUMBER_ALREADY_EXISTS = "Admin with phone number %s already exists";
 	public static final String USER_WITH_ID_NOT_FOUND = "User with id %s not found";
+	public static final String ORDER_WITH_ID_NOT_FOUND = "Order with id %s not found";
 	public static final String ADMIN_WITH_ID_NOT_FOUND = "Admin with id %s not found";
 	public static final String MINISTER_WITH_ID_NOT_FOUND = "Minister with id %s not found";
 	public static final String DEPARTMENT_WITH_ID_NOT_FOUND = "Department with id %s not found";
@@ -53,6 +56,15 @@ public class Message {
 	public static ApiResponse apiResponse(String message){
 		return ApiResponse.builder()
 				.message (message)
+				.success (true)
+				.statusCode (HttpStatus.OK.value ())
+				.build();
+	}
+
+	public static ApiResponse apiResponse(BigDecimal amount){
+		return ApiResponse.builder()
+				.message ("Total order amount calculated successfully")
+				.totalOrderAmount (amount)
 				.success (true)
 				.statusCode (HttpStatus.OK.value ())
 				.build();

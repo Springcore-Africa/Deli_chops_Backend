@@ -28,4 +28,6 @@ public class ProductResponseDto {
     private BigDecimal price;
 
     private Long quantity;
+
+    private BigDecimal priceInterestInPercentage;
 }
