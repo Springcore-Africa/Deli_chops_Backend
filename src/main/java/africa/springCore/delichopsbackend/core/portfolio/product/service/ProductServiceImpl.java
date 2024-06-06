@@ -62,6 +62,7 @@ public class ProductServiceImpl implements ProductService {
         product.setPrice(getSystemPrice(productCreationRequest.getPrice()));
         product.setCategoryId(productCreationRequest.getCategoryId());
         product.setVendorId(vendorId);
+        product.setPriceInterestInPercentage(applicationProperty.getPriceInterest());
         return getProductResponseDto(productRepository.save(product));
     }
 

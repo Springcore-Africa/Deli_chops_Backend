@@ -1,20 +1,18 @@
-package africa.springCore.delichopsbackend.core.portfolio.admin.domain.model;
+package africa.springCore.delichopsbackend.core.portfolio.order.domain.model;
 
 import africa.springCore.delichopsbackend.core.base.domain.model.BaseEntity;
-import africa.springCore.delichopsbackend.core.base.domain.model.BioData;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.io.Serial;
 
 @Entity
-@Table(name = "admin")
+@Table(name = "product_order")
 @Getter
 @Setter
 @NoArgsConstructor
-@ToString
 @AllArgsConstructor(staticName = "instance", access = AccessLevel.PRIVATE)
-public class Admin extends BaseEntity {
+public class ProductOrder extends BaseEntity {
     @Serial
     private static final long serialVersionUID = -7466640123337613601L;
 
@@ -23,6 +21,9 @@ public class Admin extends BaseEntity {
     @Column(name = "id")
     private Long id;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private BioData bioData;
+    @Column(name = "product_id")
+    private Long productId;
+
+    @Column(name = "quantity", nullable = true)
+    private Long quantity;
 }

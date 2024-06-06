@@ -16,6 +16,12 @@ public class AppUtils {
     public static final String REJECT = "reject";
     public static final String ROLES_VALUE = "roles";
     public static final String USER = "user";
+    public static final String NEW_ORDER = "New Order";
+    public static final String CHECKOUT = "checkout";
+    public static final String COMPLETE = "complete";
+    public static final String CANCEL = "cancel";
+    public static final String DELIVER = "deliver";
+    public static final String IN_TRANSIT = "in-transit";
     public static final String ERROR_VALUE = "error";
     public static final String TOKEN_PREFIX = "Bearer ";
     public static final String ACCESS_TOKEN_VALUE = "access_token";

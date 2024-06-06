@@ -12,6 +12,7 @@ import java.math.BigDecimal;
 @Getter
 @Setter
 @NoArgsConstructor
+@ToString
 @AllArgsConstructor(staticName = "instance", access = AccessLevel.PRIVATE)
 public class Product extends BaseEntity {
     @Serial
@@ -42,4 +43,7 @@ public class Product extends BaseEntity {
 
     @Column(name = "quantity", nullable = true)
     private Long quantity;
+
+    @Column(name = "price_interest", nullable = false)
+    private BigDecimal priceInterestInPercentage;
 }

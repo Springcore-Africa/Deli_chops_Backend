@@ -27,11 +27,11 @@ public abstract class BaseEntity implements Serializable {
 
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-    @CreatedDate protected LocalDateTime createdAt;
+    @CreatedDate private LocalDateTime createdAt;
 
 
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-    @LastModifiedDate protected LocalDateTime lastModifiedAt;
+    @LastModifiedDate private LocalDateTime lastModifiedAt;
 
 }
